@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojas</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+
+<body class="bg-light p-4">
+
+    <!-- Cabeçalho com o botão  -->
+    <section class="container bg-white p-4 rounded-4 shadow-sm mb-4">
+        <header class="d-flex justify-content-between align-items-center">
+            <h1 class="m-0">Lojas</h1>
+            <button class="btn" data-bs-toggle="modal" data-bs-target="#modalLoja" onclick="abrirModalNovaLoja()">
+                <i class="bi bi-plus"></i> Nova Loja
+            </button>
+        </header>
+    </section>
+
+    <!-- Seção lojas -->
+    <section class="container bg-white p-4 rounded-4 shadow-sm">
+        <h2 class="mb-4">Lojas Cadastradas</h2>
+        <div class="row g-4" id="lojasContainer"></div>
+    </section>
+
+    <!-- Modal de cadastro -->
+    <div class="modal fade" id="modalLoja" tabindex="-1" aria-labelledby="modalLojaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formLoja">
+                    <input type="hidden" id="lojaId">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLojaLabel">Adicionar Nova Loja</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nome</label>
+                                <input type="text" id="nomeLoja" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">CNPJ</label>
+                                <input type="text" id="cnpjLoja" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Telefone</label>
+                                <input type="text" id="telefoneLoja" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Rua</label>
+                                <input type="text" id="ruaLoja" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Bairro</label>
+                                <input type="text" id="bairroLoja" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cidade</label>
+                                <input type="text" id="cidadeLoja" class="form-control" required>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer mt-4">
+                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const api = "/api/lojas";
+
+        const modalLojaEl = document.getElementById("modalLoja");
+        const modalLoja = new bootstrap.Modal(modalLojaEl);
+
+        // Carregar lojas em cards
+        async function carregarLojas() {
+            try {
+                const { data: lojas } = await axios.get(api);
+                const container = document.getElementById("lojasContainer");
+                container.innerHTML = "";
+
+                lojas.forEach(l => {
+                    container.innerHTML += `
+                <article class="col-lg-4 col-md-6">
+                    <div class="store-card p-4 rounded-4 shadow-sm h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="store-icon me-3 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-shop fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">${l.nome}</h3>
+                                <small class="text-muted">CNPJ: ${l.cnpj ?? ""}</small>
+                            </div>
+                        </div>
+                        <p class="mb-1">
+                            <i class="bi bi-geo-alt-fill me-1 text-primary"></i>
+                            ${l.cidade ?? ""} - ${l.bairro ?? ""}
+                        </p>
+                        <p class="mb-3">
+                            <i class="bi bi-telephone-fill me-1 text-primary"></i>
+                            ${l.telefone ?? ""}
+                        </p>
+                        <footer class="d-flex justify-content-between">
+                            <button class="btn btn-outline-primary btn-sm px-3 rounded-pill"
+                                onclick="editarLoja(${l.id})">
+                                <i class="bi bi-pencil-square me-1"></i> Editar
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm px-3 rounded-pill"
+                                onclick="excluirLoja(${l.id})">
+                                <i class="bi bi-trash me-1"></i> Excluir
+                            </button>
+                        </footer>
+                    </div>
+                </article>`;
+                });
+            } catch (err) {
+                alert("Erro ao carregar lojas: " + (err.response?.data?.erro || err.response?.data?.message || err.message));
+            }
+        }
+
+        carregarLojas();
+
+        function abrirModalNovaLoja() {
+            document.getElementById("formLoja").reset();
+            document.getElementById("lojaId").value = "";
+            document.getElementById("modalLojaLabel").textContent = "Adicionar Nova Loja";
+            modalLoja.show();
+        }
+
+        // Salvar loja
+        document.getElementById("formLoja").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById("lojaId").value;
+            const loja = {
+                nome: document.getElementById("nomeLoja").value,
+                cnpj: document.getElementById("cnpjLoja").value,
+                telefone: document.getElementById("telefoneLoja").value,
+                rua: document.getElementById("ruaLoja").value,
+                bairro: document.getElementById("bairroLoja").value,
+                cidade: document.getElementById("cidadeLoja").value,
+            };
+
+            try {
+                if (id) {
+                    await axios.put(`${api}/${id}`, loja);
+                } else {
+                    await axios.post(api, loja);
+                }
+                carregarLojas();
+                modalLoja.hide();
+            } catch (err) {
+                const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao salvar loja";
+                alert(msg);
+            }
+        });
+
+        async function editarLoja(id) {
+            try {
+                const { data: l } = await axios.get(`${api}/${id}`);
+
+                document.getElementById("lojaId").value = l.id;
+                document.getElementById("nomeLoja").value = l.nome;
+                document.getElementById("cnpjLoja").value = l.cnpj;
+                document.getElementById("telefoneLoja").value = l.telefone;
+                document.getElementById("ruaLoja").value = l.rua;
+                document.getElementById("bairroLoja").value = l.bairro;
+                document.getElementById("cidadeLoja").value = l.cidade;
+
+                document.getElementById("modalLojaLabel").textContent = "Editar Loja";
+                modalLoja.show();
+            } catch (err) {
+                const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao carregar loja";
+                alert(msg);
+            }
+        }
+
+        async function excluirLoja(id) {
+            if (!confirm("Deseja realmente excluir esta loja?")) return;
+            try {
+                await axios.delete(`${api}/${id}`);
+                carregarLojas();
+            } catch (err) {
+                const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao excluir loja";
+                alert(msg);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+
+<!-- Estilo personalizado para os cards das lojas -->
+<style>
+    .store-card {
+        border: 1px solid #e4e8ef;
+        transition: all 0.3s ease;
+    }
+
+    .store-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .store-icon {
+        width: 48px;
+        height: 48px;
+        background: #eef5ff;
+        color: #0d6efd;
+        border-radius: 50%;
+    }
+
+    .btn-outline-danger {
+        color: #f44336;
+        border: 1px solid #f44336;
+        background-color: transparent;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #f44336;
+        color: #fff;
+    }
+</style>

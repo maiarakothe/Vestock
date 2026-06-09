@@ -1,0 +1,80 @@
+:root {
+  --cor-principal: #6744cf;
+  --cor-secundaria: #a084f3;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+#container-buscar {
+  margin-top: 30px;
+}
+
+.buscar {
+  flex: 1;
+  min-width: 250px;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+h2 {
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+}
+
+.btn {
+  background-color: var(--cor-principal);
+  color: white;
+  border: none;
+}
+
+.btn:hover {
+  background-color: var(--cor-secundaria);
+  color: #fff;
+}
+
+.action {
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.action.edit {
+  color: var(--cor-principal);
+}
+
+.action.edit:hover {
+  background: rgba(123, 92, 242, 0.1);
+  transform: scale(1.05);
+}
+
+.action.delete {
+  color: #f44336;
+}
+
+.action.delete:hover {
+  background: rgba(244, 67, 54, 0.1);
+  transform: scale(1.05);
+}
+
+.btn-outline-custom,
+.btn-outline-primary {
+  color: var(--cor-principal);
+  border: 1px solid var(--cor-principal);
+  background-color: transparent;
+}
+
+.btn-outline-custom:hover {
+  background-color: var(--cor-principal);
+  color: #fff;
+}

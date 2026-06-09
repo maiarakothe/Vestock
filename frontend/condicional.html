@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condicional</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+
+<body class="bg-light p-4">
+
+    <main>
+
+        <!-- Seção de título, botão e tabela -->
+        <section class="container bg-white p-4 rounded-4 shadow-sm" id="container-condicional">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="m-0">Condicional</h1>
+                <button class="btn btn-primary" onclick="abrirModalNovo()">
+                    <i class="bi bi-plus"></i>
+                    Novo Condicional
+                </button>
+            </header>
+
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Itens</th>
+                            <th>Data Retirada</th>
+                            <th>Data Devolução</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaCondicionais">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal de cadastro -->
+    <div class="modal fade" id="modalCondicional" tabindex="-1" aria-labelledby="modalCondicionalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCondicionalLabel">Novo Condicional</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="formCondicional">
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente</label>
+                                <select id="clienteCondicional" class="form-select" required>
+                                    <option selected disabled value="">Selecione o cliente...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nome da Condicional</label>
+                                <input id="nomeItemCondicional" type="text" class="form-control"
+                                    placeholder="Ex: Retirada de roupas" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data de Retirada</label>
+                                <input id="dataRetiradaCondicional" type="datetime-local" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Prevista Devolução</label>
+                                <input id="dataDevolucaoCondicional" type="datetime-local" class="form-control">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Observações</label>
+                                <textarea id="obsCondicional" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <hr class="mt-4 mb-2">
+                            <p><strong>Itens Detalhados</strong></p>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Produto</label>
+                                <select class="form-select" id="produtoCondicional">
+                                    <option selected disabled value="">Selecione o produto...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Quantidade</label>
+                                <input id="quantidadeCondicional" type="number" class="form-control" min="1" value="1">
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-secondary w-100" onclick="adicionarItem()">
+                                    <i class="bi bi-plus-circle"></i> Adicionar
+                                </button>
+                            </div>
+
+                            <div class="col-12 mt-3" id="listaItensContainer">
+                                <p class="text-muted">Nenhum item adicionado.</p>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer mt-4">
+                            <button type="button" class="btn btn-outline-custom"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const apiCondicional = "/api/condicionais";
+        const apiClientes = "/api/clientes";
+        const apiProdutos = "/api/produtos/com-estoque";
+
+        const modalCondicionalEl = document.getElementById("modalCondicional");
+        const modalCondicional = new bootstrap.Modal(modalCondicionalEl);
+
+        let itensTemp = [];
+
+        function carregarCondicionais() {
+            axios.get(apiCondicional)
+                .then(res => {
+                    const tbody = document.getElementById("tabelaCondicionais");
+                    tbody.innerHTML = "";
+                    res.data.forEach(c => {
+
+                        const itensStr = c.itens?.map(i =>
+                            `<div>${i.quantidadeItem}x - ${i.produto?.nome || "Produto Sem Nome"}</div>`
+                        ).join("") || "-";
+
+
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${c.cliente?.nome || "N/A"}</td>
+                            <td style="white-space: normal; max-width: 320px;">${itensStr}</td>
+                            <td>${c.dataRetirada ? new Date(c.dataRetirada).toLocaleString('pt-BR') : "-"}</td>
+                            <td>${c.dataDevolucao ? new Date(c.dataDevolucao).toLocaleString('pt-BR') : "-"}</td>
+                            <td>${c.observacao || "-"}</td>
+                            <td>
+                                <button class="action edit" title="Editar" onclick="editarCondicional(${c.id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="action delete" title="Excluir" onclick="deletarCondicional(${c.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                                ${c.devolvido
+                                ? '<span class="badge-devolvido ms-2">Devolvido</span>'
+                                : `<button class="btn btn-sm ms-2 devolver" title="Marcar como devolvido" onclick="marcarDevolvido(${c.id})">
+                                            <i class="bi bi-check2-circle"></i> Devolvido
+                                       </button>`
+                            }
+                            </td>
+                        </tr>
+                    `;
+                    });
+                })
+                .catch(err => {
+                    console.error("Erro ao carregar condicionais:", err);
+                    alert("Erro ao carregar condicionais.");
+                });
+        }
+
+
+        function abrirModalNovo() {
+            document.getElementById("formCondicional").reset();
+            document.getElementById("condicionalId")?.remove();
+
+            itensTemp = [];
+            atualizarListaItens();
+
+            document.getElementById("modalCondicionalLabel").textContent = "Novo Condicional";
+
+            Promise.all([carregarClientes(), carregarProdutos()])
+                .then(() => modalCondicional.show())
+                .catch(() => alert("Erro ao carregar dados iniciais (clientes/produtos)."));
+        }
+
+
+        function carregarClientes() {
+            const selectCliente = document.getElementById("clienteCondicional");
+            selectCliente.innerHTML = `<option disabled selected value="">Selecione o cliente...</option>`;
+            return axios.get(apiClientes)
+                .then(res => res.data.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.id;
+                    option.textContent = c.nome;
+                    selectCliente.appendChild(option);
+                }))
+                .catch(err => console.error("Erro ao carregar clientes:", err));
+        }
+
+        function carregarProdutos() {
+            const selectProduto = document.getElementById("produtoCondicional");
+            selectProduto.innerHTML = `<option disabled selected value="">Selecione o produto...</option>`;
+            return axios.get(apiProdutos)
+                .then(res => res.data.forEach(p => {
+                    const option = document.createElement("option");
+                    option.value = p.id;
+                    option.textContent = `${p.nome} (estoque: ${p.quantidadeEstoque ?? 0})`;
+                    selectProduto.appendChild(option);
+                }))
+                .catch(err => console.error("Erro ao carregar produtos:", err));
+        }
+
+        function adicionarItem() {
+            const produtoSelect = document.getElementById("produtoCondicional");
+            const produtoId = produtoSelect.value;
+            const produtoNome = produtoSelect.options[produtoSelect.selectedIndex].textContent;
+            const quantidade = parseInt(document.getElementById("quantidadeCondicional").value, 10);
+
+            if (!produtoId || quantidade <= 0) return alert("Selecione um produto e quantidade válida.");
+
+            itensTemp.push({
+                produto: { id: parseInt(produtoId, 10) },
+                quantidadeItem: quantidade,
+                nomeProduto: produtoNome
+            });
+
+            atualizarListaItens();
+
+            document.getElementById("quantidadeCondicional").value = 1;
+            produtoSelect.value = "";
+        }
+
+        function atualizarListaItens() {
+            const container = document.getElementById("listaItensContainer");
+
+            if (itensTemp.length === 0) {
+                container.innerHTML = `<p class="text-muted">Nenhum item adicionado.</p>`;
+                return;
+            }
+
+            let htmlItens = itensTemp.map((item, i) =>
+                `<li>
+                <span>${item.quantidadeItem}x ${item.nomeProduto}</span>
+                <div>
+                    <button type="button" onclick="removerItem(${i})" class="btn btn-sm btn-danger">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </li>`
+            ).join("");
+
+            container.innerHTML = `<ul id="listaItens" class="mt-2">${htmlItens}</ul>`;
+        }
+
+        function removerItem(index) {
+            if (confirm(`Tem certeza que deseja remover o item "${itensTemp[index].nomeProduto}"?`)) {
+                itensTemp.splice(index, 1);
+                atualizarListaItens();
+            }
+        }
+
+        function editarCondicional(id) {
+            Promise.all([carregarClientes(), carregarProdutos(), axios.get(`${apiCondicional}/${id}`)])
+                .then(([, , responseCondicional]) => {
+                    const c = responseCondicional.data;
+
+                    document.getElementById("condicionalId")?.remove();
+                    const inputId = document.createElement("input");
+                    inputId.type = "hidden";
+                    inputId.id = "condicionalId";
+                    inputId.value = c.id;
+                    document.getElementById("formCondicional").appendChild(inputId);
+                    document.getElementById("clienteCondicional").value = c.cliente.id;
+                    document.getElementById("nomeItemCondicional").value = c.nomeItem;
+                    document.getElementById("dataRetiradaCondicional").value = c.dataRetirada?.substring(0, 16) || "";
+                    document.getElementById("dataDevolucaoCondicional").value = c.dataDevolucao?.substring(0, 16) || "";
+                    document.getElementById("obsCondicional").value = c.observacao || "";
+
+                    itensTemp = c.itens ? c.itens.map(i => ({
+                        produto: { id: i.produto.id },
+                        quantidadeItem: i.quantidadeItem,
+                        nomeProduto: i.produto.nome || 'Produto Sem Nome'
+                    })) : [];
+                    atualizarListaItens();
+
+                    document.getElementById("modalCondicionalLabel").textContent = "Editar Condicional";
+                    modalCondicional.show();
+                })
+                .catch((err) => {
+                    console.error("Erro ao buscar dados para edição:", err);
+                    alert("Erro ao buscar dados para edição.");
+                });
+        }
+
+        function deletarCondicional(id) {
+            if (!confirm("Tem certeza que deseja deletar esta condicional?")) return;
+            axios.delete(`${apiCondicional}/${id}`)
+                .then(() => carregarCondicionais())
+                .catch(err => {
+                    console.error(err);
+                    alert(err.response?.data || "Erro ao deletar condicional.");
+                });
+        }
+
+        document.getElementById("formCondicional").addEventListener("submit", e => {
+            e.preventDefault();
+            const id = document.getElementById("condicionalId")?.value;
+
+            if (itensTemp.length === 0) {
+                return alert("É necessário adicionar pelo menos um item à condicional.");
+            }
+
+            const condicional = {
+                cliente: { id: parseInt(document.getElementById("clienteCondicional").value, 10) },
+                nomeItem: document.getElementById("nomeItemCondicional").value,
+                dataRetirada: document.getElementById("dataRetiradaCondicional").value,
+                dataDevolucao: document.getElementById("dataDevolucaoCondicional").value || null,
+                observacao: document.getElementById("obsCondicional").value,
+                itens: itensTemp.map(item => ({
+                    quantidadeItem: item.quantidadeItem,
+                    produto: { id: item.produto.id }
+                }))
+            };
+
+            const metodo = id ? "put" : "post";
+            const url = id ? `${apiCondicional}/${id}` : apiCondicional;
+
+            axios[metodo](url, condicional)
+                .then(() => {
+                    carregarCondicionais();
+                    modalCondicional.hide();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert(err.response?.data || "Erro ao salvar condicional.");
+                });
+        });
+
+        function marcarDevolvido(id) {
+            if (!confirm("Confirmar devolução da condicional?")) return;
+            axios.patch(`${apiCondicional}/${id}/devolver`)
+                .then(() => {
+                    carregarCondicionais();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert(err.response?.data || "Erro ao marcar como devolvido.");
+                });
+        }
+
+        carregarCondicionais();
+    </script>
+</body>
+
+</html>
+<style>
+    #listaItensContainer ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    #listaItensContainer li {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 6px 10px;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 6px;
+    }
+
+    .badge-devolvido {
+        background-color: #28b070;
+        color: #fff;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+    }
+
+    .devolver {
+        background-color: #f9b9b9 !important;
+        border: 1px solid #e23e3e !important;
+        color: #e23e3e !important;
+    }
+
+    .devolver:hover {
+        background-color: #e23e3e !important;
+        color: #fff !important;
+    }
+</style>

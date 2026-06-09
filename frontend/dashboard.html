@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+
+<body class="bg-light p-4">
+
+    <main class="d-flex flex-column gap-4">
+
+        <section class="container bg-white p-4 rounded-4 shadow-sm">
+            <h1 class="m-0">Dashboard</h1>
+        </section>
+
+        <!-- Cards com contagem -->
+        <section class="container">
+            <div class="row g-4">
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="kpi-card" id="clientes-card">
+                        <div class="kpi-icon bg-primary-light text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-title">Clientes Cadastrados</span>
+                            <span class="kpi-value">0</span>
+                            <small class="text-muted">Base ativa</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="kpi-card" id="produtos-card">
+                        <div class="kpi-icon bg-info-light text-info">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-title">Produtos em Estoque</span>
+                            <span class="kpi-value">0</span>
+                            <small class="text-muted">Itens disponíveis</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-6">
+                    <div class="kpi-card" id="condicionais-card">
+                        <div class="kpi-icon bg-warning-light text-warning">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-title">Condicionais Ativas</span>
+                            <span class="kpi-value">0</span>
+                            <small class="text-muted">Pendentes</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="container bg-white p-4 rounded-4 shadow-sm">
+            <div class="row g-4">
+
+                <!-- Estoque Baixo -->
+                <div class="col-lg-6">
+                    <h5 class="mb-3">Produtos com Estoque Baixo</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover" id="estoque-baixo">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Estoque</th>
+                                    <th>Categoria</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Alertas de condicionais vencendo no dia -->
+                <div class="col-lg-6" id="alerta-condicionais-card">
+                    <h5 class="mb-3">Alertas Importantes</h5>
+                    <div id="alertas-condicionais" class="d-grid gap-3"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    // Total dos clientes
+    axios.get('/api/clientes/total')
+        .then(response => {
+            const total = response.data.totalClientes;
+            document.querySelector('#clientes-card .kpi-value').textContent = total;
+        })
+        .catch(error => console.error('Erro ao buscar total de clientes:', error));
+
+    // Total das condicionais
+    axios.get('/api/condicionais/total-ativas')
+        .then(response => {
+            const totalAtivas = response.data.totalAtivas;
+            document.querySelector('#condicionais-card .kpi-value').textContent = totalAtivas;
+        })
+        .catch(error => console.error('Erro ao buscar condicionais ativas:', error));
+
+    // Produtos e estoque baixo
+    axios.get('/api/produtos/total')
+        .then(response => {
+            const totalEstoque = response.data.totalEstoque;
+            const estoqueBaixo = response.data.estoqueBaixo;
+
+            document.querySelector('#produtos-card .kpi-value').textContent = totalEstoque;
+
+            const tbody = document.querySelector('#estoque-baixo tbody');
+            tbody.innerHTML = '';
+
+            estoqueBaixo.forEach(produto => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${produto.nome}</td>
+          <td>${produto.quantidadeEstoque}</td>
+          <td>${produto.tipo}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => console.error('Erro ao buscar estoque:', error));
+
+    // Alerta de condicional vencendo hoje
+    axios.get('/api/condicionais/vencendo-hoje')
+        .then(response => {
+            const alertContainer = document.getElementById('alertas-condicionais');
+            alertContainer.innerHTML = '';
+
+            const alertData = response.data;
+            const cardPai = document.getElementById('alerta-condicionais-card');
+
+            if (alertData.length > 0) {
+                alertData.forEach(cond => {
+                    const cliente = cond.cliente ? cond.cliente.nome : 'Cliente';
+                    const alerta = document.createElement('div');
+                    alerta.className = 'alert-card alert-warning d-flex align-items-center gap-2';
+                    alerta.innerHTML = `
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>
+              <strong>Condicional Vencendo!</strong>
+              <p class="mb-0 small">A condicional #${cond.id} para ${cliente} vence hoje.</p>
+            </div>
+          `;
+                    alertContainer.appendChild(alerta);
+                });
+                cardPai.style.display = 'block';
+            } else {
+                cardPai.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Erro ao carregar alertas:', error));
+</script>
+
+</html>

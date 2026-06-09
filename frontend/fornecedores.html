@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornecedores</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+
+<body class="bg-light p-4">
+
+    <!-- Cabeçalho com o botão -->
+    <section class="container bg-white p-4 rounded-4 shadow-sm mb-4">
+        <header class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="m-0">Fornecedores</h1>
+            <button class="btn" data-bs-toggle="modal" data-bs-target="#modalFornecedor"
+                onclick="abrirModalNovoFornecedor()">
+                <i class="bi bi-plus"></i>
+                Novo Fornecedor
+            </button>
+        </header>
+    </section>
+
+    <!-- Tabela -->
+    <section class="container bg-white p-4 rounded-4 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>Nome da empresa</th>
+                        <th>CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Email</th>
+                        <th>Cidade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal de cadastro -->
+    <div class="modal fade" id="modalFornecedor" tabindex="-1" aria-labelledby="modalFornecedorLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formFornecedor">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalFornecedorLabel">Adicionar Fornecedor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label for="nomeFornecedor" class="form-label">Nome</label>
+                                <input type="text" id="nomeFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="cnpjFornecedor" class="form-label">CNPJ</label>
+                                <input type="text" id="cnpjFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="telefoneFornecedor" class="form-label">Telefone</label>
+                                <input type="text" id="telefoneFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="emailFornecedor" class="form-label">Email</label>
+                                <input type="email" id="emailFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="nomeFantasiaFornecedor" class="form-label">Nome Fantasia</label>
+                                <input type="text" id="nomeFantasiaFornecedor" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="sexoContato" class="form-label">Sexo do Contato</label>
+                                <select id="sexoFornecedor" class="form-select">
+                                    <option selected disabled>Selecione...</option>
+                                    <option value="F">F</option>
+                                    <option value="M">M</option>
+                                </select>
+                            </div>
+
+                            <hr class="mt-4 mb-2">
+                            <p><strong>Endereço</strong></p>
+
+                            <div class="col-md-6">
+                                <label for="ruaFornecedor" class="form-label">Rua</label>
+                                <input type="text" id="ruaFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="bairroFornecedor" class="form-label">Bairro</label>
+                                <input type="text" id="bairroFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="cidadeFornecedor" class="form-label">Cidade</label>
+                                <input type="text" id="cidadeFornecedor" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="estadoFornecedor" class="form-label">Estado</label>
+                                <input type="text" id="estadoFornecedor" class="form-control" required>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-4">
+                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const apiFornecedores = "/api/fornecedores";
+
+        const modalFornecedorEl = document.getElementById("modalFornecedor");
+        const modalFornecedor = new bootstrap.Modal(modalFornecedorEl);
+
+        function carregarFornecedores() {
+            axios.get(apiFornecedores)
+                .then(res => {
+                    const tbody = document.querySelector("table tbody");
+                    tbody.innerHTML = "";
+                    res.data.forEach(f => {
+                        tbody.innerHTML += `
+                    <tr>
+                        <td>${f.nome}</td>
+                        <td>${f.cnpj}</td>
+                        <td>${f.telefone}</td> 
+                        <td>${f.email}</td>
+                        <td>${f.cidade}</td>
+                        <td>
+                            <button class="action edit" onclick="editarFornecedor(${f.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="action delete" onclick="excluirFornecedor(${f.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                    });
+                })
+                .catch(err => console.error("Erro ao carregar fornecedores:", err));
+        }
+
+        function abrirModalNovoFornecedor() {
+            document.getElementById("formFornecedor").reset();
+            document.getElementById("modalFornecedorLabel").textContent = "Novo Fornecedor";
+            document.getElementById("fornecedorId")?.remove();
+
+            modalFornecedor.show();
+        }
+
+        // Salvar/Atualizar fornecedor
+        document.getElementById("formFornecedor").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById("fornecedorId")?.value;
+            const fornecedor = {
+                nome: document.getElementById("nomeFornecedor").value,
+                cnpj: document.getElementById("cnpjFornecedor").value,
+                email: document.getElementById("emailFornecedor").value,
+                telefone: document.getElementById("telefoneFornecedor").value,
+                nomeFantasia: document.getElementById("nomeFantasiaFornecedor").value,
+                sexo: document.getElementById("sexoFornecedor").value,
+                rua: document.getElementById("ruaFornecedor").value,
+                bairro: document.getElementById("bairroFornecedor").value,
+                cidade: document.getElementById("cidadeFornecedor").value,
+                estado: document.getElementById("estadoFornecedor").value,
+            };
+
+            const metodo = id ? "put" : "post";
+            const url = id ? `${apiFornecedores}/${id}` : apiFornecedores;
+
+            axios[metodo](url, fornecedor)
+                .then(() => {
+                    carregarFornecedores();
+                    modalFornecedor.hide();
+                })
+                .catch(err => {
+                    const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao salvar fornecedor";
+                    alert(msg);
+                });
+        });
+
+        function editarFornecedor(id) {
+            axios.get(`${apiFornecedores}/${id}`)
+                .then(res => {
+                    const f = res.data;
+
+                    document.getElementById("fornecedorId")?.remove();
+                    const inputId = document.createElement("input");
+                    inputId.type = "hidden";
+                    inputId.id = "fornecedorId";
+                    inputId.value = f.id;
+                    document.getElementById("formFornecedor").appendChild(inputId);
+
+                    document.getElementById("nomeFornecedor").value = f.nome;
+                    document.getElementById("cnpjFornecedor").value = f.cnpj;
+                    document.getElementById("telefoneFornecedor").value = f.telefone;
+                    document.getElementById("emailFornecedor").value = f.email;
+                    document.getElementById("nomeFantasiaFornecedor").value = f.nomeFantasia;
+                    document.getElementById("sexoFornecedor").value = f.sexo;
+                    document.getElementById("ruaFornecedor").value = f.rua;
+                    document.getElementById("bairroFornecedor").value = f.bairro;
+                    document.getElementById("cidadeFornecedor").value = f.cidade;
+                    document.getElementById("estadoFornecedor").value = f.estado;
+
+                    document.getElementById("modalFornecedorLabel").textContent = "Editar Fornecedor";
+                    modalFornecedor.show();
+                })
+                .catch(err => {
+                    const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao buscar fornecedor";
+                    alert(msg);
+                });
+        };
+
+        function excluirFornecedor(id) {
+            if (!confirm("Deseja realmente excluir este fornecedor?")) return;
+
+            axios.delete(`${apiFornecedores}/${id}`)
+                .then(() => carregarFornecedores())
+                .catch(err => {
+                    const msg = err.response?.data?.erro || err.response?.data?.message || "Erro ao excluir fornecedor";
+                    alert(msg);
+                });
+        }
+        carregarFornecedores();
+    </script>
+</body>
+
+</html>
