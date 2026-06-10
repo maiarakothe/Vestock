@@ -97,12 +97,12 @@
     </main>
 
 </body>
-
+<script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
     // Total dos clientes
-    axios.get('/api/clientes/total')
+    axios.get(`${API_URL}/api/clientes/total`)
         .then(response => {
             const total = response.data.totalClientes;
             document.querySelector('#clientes-card .kpi-value').textContent = total;
@@ -110,7 +110,7 @@
         .catch(error => console.error('Erro ao buscar total de clientes:', error));
 
     // Total das condicionais
-    axios.get('/api/condicionais/total-ativas')
+    axios.get(`${API_URL}/api/condicionais/total-ativas`)
         .then(response => {
             const totalAtivas = response.data.totalAtivas;
             document.querySelector('#condicionais-card .kpi-value').textContent = totalAtivas;
@@ -118,7 +118,7 @@
         .catch(error => console.error('Erro ao buscar condicionais ativas:', error));
 
     // Produtos e estoque baixo
-    axios.get('/api/produtos/total')
+    axios.get(`${API_URL}/api/produtos/total`)
         .then(response => {
             const totalEstoque = response.data.totalEstoque;
             const estoqueBaixo = response.data.estoqueBaixo;
@@ -141,7 +141,7 @@
         .catch(error => console.error('Erro ao buscar estoque:', error));
 
     // Alerta de condicional vencendo hoje
-    axios.get('/api/condicionais/vencendo-hoje')
+    axios.get(`${API_URL}/api/condicionais/vencendo-hoje`)
         .then(response => {
             const alertContainer = document.getElementById('alertas-condicionais');
             alertContainer.innerHTML = '';
