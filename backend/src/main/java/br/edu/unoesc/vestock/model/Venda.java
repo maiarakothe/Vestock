@@ -57,6 +57,10 @@ public class Venda {
 	private Funcionario funcionario;
 
 	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
+
+	@ManyToOne
 	@JoinColumn(name = "coddsc")
 	private Desconto desconto;
 
@@ -145,6 +149,14 @@ public class Venda {
 
 	public void setDesconto(Desconto desconto) {
 		this.desconto = desconto;
+	}
+
+	public Loja getLoja() {
+		return loja;
+	}
+
+	public void setLoja(Loja loja) {
+		this.loja = loja;
 	}
 
 	public List<ItemVenda> getItens() {

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
@@ -26,6 +28,10 @@ public class Funcionario extends Pessoa {
 	/** Data de admissão. */
 	@Column(name = "datadmfun")
 	private LocalDateTime dataAdmissao;
+	
+	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
 
 	public Funcionario() {
 
@@ -63,5 +69,13 @@ public class Funcionario extends Pessoa {
 
 	public void setDataAdmissao(LocalDateTime dataAdmissao) {
 		this.dataAdmissao = dataAdmissao;
+	}
+	
+	public Loja getLoja() {
+	    return loja;
+	}
+
+	public void setLoja(Loja loja) {
+	    this.loja = loja;
 	}
 }

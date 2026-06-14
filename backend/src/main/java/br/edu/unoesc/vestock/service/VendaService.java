@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Desconto;
 import br.edu.unoesc.vestock.model.ItemVenda;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.model.Produto;
 import br.edu.unoesc.vestock.model.Venda;
 import br.edu.unoesc.vestock.repository.DescontoRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 import br.edu.unoesc.vestock.repository.ProdutoRepository;
 import br.edu.unoesc.vestock.repository.VendaRepository;
 
@@ -22,21 +24,24 @@ public class VendaService {
 	private final VendaRepository vendaRepository;
 	private final DescontoRepository descontoRepository;
 	private final ProdutoRepository produtoRepository;
+	private final LojaRepository lojaRepository;
 
 	public VendaService(VendaRepository vendaRepository, DescontoRepository descontoRepository,
-			ProdutoRepository produtoRepository) {
+			ProdutoRepository produtoRepository, LojaRepository lojaRepository) {
 		this.vendaRepository = vendaRepository;
 		this.descontoRepository = descontoRepository;
 		this.produtoRepository = produtoRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todas as vendas.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todas as vendas.
 	 */
-	public List<Venda> listarTodos() {
-		return vendaRepository.findAll();
+	public List<Venda> listarTodos(Integer lojaId) {
+		return vendaRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -65,6 +70,15 @@ public class VendaService {
 	 *                          o estoque for insuficiente.
 	 */
 	public Venda criarVenda(Venda venda) {
+		if (venda.getLoja() == null || venda.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para realizar uma venda");
+		}
+
+		Loja loja = lojaRepository.findById(venda.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada: " + venda.getLoja().getId()));
+
+		venda.setLoja(loja);
+
 		List<ItemVenda> itensRecebidos = new ArrayList<>(venda.getItens());
 		venda.getItens().clear();
 

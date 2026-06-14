@@ -6,24 +6,29 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Fornecedor;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.repository.FornecedorRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 
 @Service
 public class FornecedorService {
 
 	private final FornecedorRepository fornecedorRepository;
+	private final LojaRepository lojaRepository;
 
-	public FornecedorService(FornecedorRepository fornecedorRepository) {
+	public FornecedorService(FornecedorRepository fornecedorRepository, LojaRepository lojaRepository) {
 		this.fornecedorRepository = fornecedorRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todos os fornecedores.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todos os fornecedores.
 	 */
-	public List<Fornecedor> listarTodos() {
-		return fornecedorRepository.findAll();
+	public List<Fornecedor> listarTodos(Integer lojaId) {
+		return fornecedorRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -50,6 +55,14 @@ public class FornecedorService {
 	 * @return O fornecedor salvo.
 	 */
 	public Fornecedor criarFornecedor(Fornecedor fornecedor) {
+		if (fornecedor.getLoja() == null || fornecedor.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para cadastrar um fornecedor");
+		}
+
+		Loja loja = lojaRepository.findById(fornecedor.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada"));
+
+		fornecedor.setLoja(loja);
 		return fornecedorRepository.save(fornecedor);
 	}
 

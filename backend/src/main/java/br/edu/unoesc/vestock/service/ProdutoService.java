@@ -4,25 +4,31 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
 import br.edu.unoesc.vestock.model.Produto;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.repository.ProdutoRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 
 @Service
 public class ProdutoService {
 
 	private final ProdutoRepository produtoRepository;
+	private final LojaRepository lojaRepository;
 
-	public ProdutoService(ProdutoRepository produtoRepository) {
+	public ProdutoService(ProdutoRepository produtoRepository, LojaRepository lojaRepository) {
 		this.produtoRepository = produtoRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todos os produtos.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todos os produtos.
 	 */
-	public List<Produto> listarTodos() {
-		return produtoRepository.findAll();
+	public List<Produto> listarTodos(Integer lojaId) {
+		return produtoRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -49,6 +55,14 @@ public class ProdutoService {
 	 * @return O produto salvo.
 	 */
 	public Produto criarProduto(Produto produto) {
+		if (produto.getLoja() == null || produto.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para cadastrar um produto");
+		}
+
+		Loja loja = lojaRepository.findById(produto.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada: " + produto.getLoja().getId()));
+
+		produto.setLoja(loja);
 		return produtoRepository.save(produto);
 	}
 
@@ -81,10 +95,11 @@ public class ProdutoService {
 	/**
 	 * Lista os produtos que possuem quantidade em estoque maior que zero.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de produtos com estoque.
 	 */
-	public List<Produto> listarApenasComEstoque() {
-		return produtoRepository.findByQuantidadeEstoqueGreaterThan(0);
+	public List<Produto> listarApenasComEstoque(Integer lojaId) {
+		return produtoRepository.findByLojaIdAndQuantidadeEstoqueGreaterThan(lojaId, 0);
 	}
 
 	/**
@@ -101,42 +116,44 @@ public class ProdutoService {
 	/**
 	 * Conta o número total de produtos.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return O número total de produtos.
 	 */
-	public long contarProdutos() {
-		return produtoRepository.count();
+	public long contarProdutos(Integer lojaId) {
+		return produtoRepository.countByLojaId(lojaId);
 	}
 
 	/**
 	 * Conta o número de produtos que possuem estoque maior que zero.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return O número de produtos com estoque.
 	 */
-	public long contarProdutosComEstoque() {
-		return produtoRepository.countByQuantidadeEstoqueGreaterThan(0);
+	public long contarProdutosComEstoque(Integer lojaId) {
+		return produtoRepository.countByLojaIdAndQuantidadeEstoqueGreaterThan(lojaId, 0);
 	}
 
 	/**
 	 * Lista os produtos com estoque igual ou menor que o limite fornecido.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @param limite O limite máximo de estoque para ser considerado baixo.
 	 * @return Uma lista de produtos com estoque baixo.
 	 */
-	public List<Produto> listarEstoqueBaixo(int limite) {
-		return produtoRepository.findByQuantidadeEstoqueLessThanEqual(limite);
+	public List<Produto> listarEstoqueBaixo(Integer lojaId, int limite) {
+		return produtoRepository.findByLojaIdAndQuantidadeEstoqueLessThanEqual(lojaId, limite);
 	}
 
 	/**
 	 * Busca produtos cujo nome, tipo, cor ou tamanho contenha o termo informado.
 	 * 
-	 * @param termo O termo de busca que será comparado com nome, tipo, cor e
-	 *              tamanho do produto.
+	 * @param lojaId O ID da loja logada.
+	 * @param termo  O termo de busca que será comparado com nome, tipo, cor e
+	 *               tamanho do produto.
 	 * @return Uma lista de produtos que correspondem ao termo de busca.
 	 */
-	public List<Produto> buscarPorTermo(String termo) {
-		return produtoRepository
-				.findByNomeContainingIgnoreCaseOrTipoContainingIgnoreCaseOrCorContainingIgnoreCaseOrTamanhoContainingIgnoreCase(
-						termo, termo, termo, termo);
+	public List<Produto> buscarPorTermo(Integer lojaId, String termo) {
+		return produtoRepository.buscarPorTermo(lojaId, termo);
 	}
 
 }

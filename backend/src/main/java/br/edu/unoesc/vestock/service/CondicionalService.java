@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Condicional;
 import br.edu.unoesc.vestock.model.ItemCondicional;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.model.Produto;
 import br.edu.unoesc.vestock.repository.CondicionalRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 import br.edu.unoesc.vestock.repository.ProdutoRepository;
 
 @Service
@@ -19,19 +21,23 @@ public class CondicionalService {
 
 	private final CondicionalRepository condicionalRepository;
 	private final ProdutoRepository produtoRepository;
+	private final LojaRepository lojaRepository;
 
-	public CondicionalService(CondicionalRepository condicionalRepository, ProdutoRepository produtoRepository) {
+	public CondicionalService(CondicionalRepository condicionalRepository, ProdutoRepository produtoRepository,
+			LojaRepository lojaRepository) {
 		this.condicionalRepository = condicionalRepository;
 		this.produtoRepository = produtoRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todas as condicionais.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todas as condicionais.
 	 */
-	public List<Condicional> listarTodos() {
-		return condicionalRepository.findAll();
+	public List<Condicional> listarTodos(Integer lojaId) {
+		return condicionalRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -80,6 +86,15 @@ public class CondicionalService {
 	public Condicional criarCondicional(Condicional condicional) {
 
 		validarDatas(condicional);
+
+		if (condicional.getLoja() == null || condicional.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para criar uma condicional");
+		}
+
+		Loja loja = lojaRepository.findById(condicional.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada: " + condicional.getLoja().getId()));
+
+		condicional.setLoja(loja);
 
 		condicional.setDevolvido(false);
 
@@ -211,20 +226,22 @@ public class CondicionalService {
 	/**
 	 * Conta o número de condicionais que não foram devolvidas (ativas).
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return O número de condicionais ativas.
 	 */
-	public long contarCondicionaisAtivas() {
-		return condicionalRepository.countByDevolvidoFalse();
+	public long contarCondicionaisAtivas(Integer lojaId) {
+		return condicionalRepository.countByLojaIdAndDevolvidoFalse(lojaId);
 	}
 
 	/**
 	 * Lista as condicionais ativas (não devolvidas) que vencem na data de hoje.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de condicionais vencendo hoje.
 	 */
-	public List<Condicional> listarCondicionaisVencendoHoje() {
+	public List<Condicional> listarCondicionaisVencendoHoje(Integer lojaId) {
 		LocalDate hoje = LocalDate.now();
-		return condicionalRepository.findByDataDevolucaoBetweenAndDevolvidoFalse(hoje.atStartOfDay(),
-				hoje.atTime(LocalTime.MAX));
+		return condicionalRepository.findByLojaIdAndDataDevolucaoBetweenAndDevolvidoFalse(lojaId,
+				hoje.atStartOfDay(), hoje.atTime(LocalTime.MAX));
 	}
 }

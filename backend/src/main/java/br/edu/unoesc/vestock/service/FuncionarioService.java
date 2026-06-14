@@ -7,24 +7,32 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Funcionario;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.repository.FuncionarioRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 
 @Service
 public class FuncionarioService {
 
 	private final FuncionarioRepository funcionarioRepository;
+	private final LojaRepository lojaRepository;
 
-	public FuncionarioService(FuncionarioRepository funcionarioRepository) {
+	public FuncionarioService(
+			FuncionarioRepository funcionarioRepository,
+			LojaRepository lojaRepository) {
+
 		this.funcionarioRepository = funcionarioRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todos os funcionários.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todos os funcionários.
 	 */
-	public List<Funcionario> listarTodos() {
-		return funcionarioRepository.findAll();
+	public List<Funcionario> listarTodos(Integer lojaId) {
+		return funcionarioRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -54,6 +62,19 @@ public class FuncionarioService {
 	public Funcionario criarFuncionario(Funcionario funcionario) {
 
 		funcionario.setDataAdmissao(LocalDateTime.now());
+
+		if (funcionario.getLoja() == null ||
+				funcionario.getLoja().getId() == null) {
+
+			throw new RuntimeException(
+					"Loja é obrigatória");
+		}
+
+		Loja loja = lojaRepository
+				.findById(funcionario.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada"));
+
+		funcionario.setLoja(loja);
 
 		return funcionarioRepository.save(funcionario);
 	}

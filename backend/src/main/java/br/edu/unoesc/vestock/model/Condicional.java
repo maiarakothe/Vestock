@@ -58,6 +58,10 @@ public class Condicional {
 	@JoinColumn(name = "codcli", nullable = false)
 	private Cliente cliente;
 
+	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
+
 	public Condicional() {
 	}
 
@@ -136,6 +140,14 @@ public class Condicional {
 
 	public void setDevolvido(Boolean devolvido) {
 		this.devolvido = devolvido;
+	}
+
+	public Loja getLoja() {
+		return loja;
+	}
+
+	public void setLoja(Loja loja) {
+		this.loja = loja;
 	}
 
 }

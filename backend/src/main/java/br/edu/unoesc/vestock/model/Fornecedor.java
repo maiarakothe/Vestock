@@ -2,6 +2,8 @@ package br.edu.unoesc.vestock.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
@@ -20,6 +22,10 @@ public class Fornecedor extends Pessoa {
 	/** Nome fantasia do fornecedor. */
 	@Column(name = "nomfanfor", length = 100)
 	private String nomeFantasia;
+
+	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
 
 	public Fornecedor() {
 
@@ -48,5 +54,13 @@ public class Fornecedor extends Pessoa {
 
 	public void setNomeFantasia(String nomeFantasia) {
 		this.nomeFantasia = nomeFantasia;
+	}
+
+	public Loja getLoja() {
+		return loja;
+	}
+
+	public void setLoja(Loja loja) {
+		this.loja = loja;
 	}
 }

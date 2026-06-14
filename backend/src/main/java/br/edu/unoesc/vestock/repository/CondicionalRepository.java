@@ -12,4 +12,11 @@ public interface CondicionalRepository extends JpaRepository<Condicional, Intege
 
 	List<Condicional> findByDataDevolucaoBetweenAndDevolvidoFalse(LocalDateTime inicio, LocalDateTime fim);
 
+	List<Condicional> findByLojaId(Integer lojaId);
+
+	long countByLojaIdAndDevolvidoFalse(Integer lojaId);
+
+	List<Condicional> findByLojaIdAndDataDevolucaoBetweenAndDevolvidoFalse(Integer lojaId, LocalDateTime atStartOfDay,
+			LocalDateTime atTime);
+
 }

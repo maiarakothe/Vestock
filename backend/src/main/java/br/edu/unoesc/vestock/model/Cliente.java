@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
@@ -21,6 +23,10 @@ public class Cliente extends Pessoa {
 
 	@Column(name = "datcadcli")
 	private LocalDateTime dataCadastro;
+
+	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
 
 	public Cliente() {
 
@@ -47,6 +53,14 @@ public class Cliente extends Pessoa {
 
 	public void setDataCadastro(LocalDateTime dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+
+	public Loja getLoja() {
+		return loja;
+	}
+
+	public void setLoja(Loja loja) {
+		this.loja = loja;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.unoesc.vestock.model.Condicional;
@@ -28,8 +29,8 @@ public class CondicionalController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Condicional>> listarTodos() {
-		return ResponseEntity.ok(condicionalService.listarTodos());
+	public ResponseEntity<List<Condicional>> listarTodos(@RequestHeader("lojaId") Integer lojaId) {
+		return ResponseEntity.ok(condicionalService.listarTodos(lojaId));
 	}
 
 	@GetMapping("/{id}")
@@ -74,14 +75,14 @@ public class CondicionalController {
 	}
 
 	@GetMapping("/total-ativas")
-	public Map<String, Long> getTotalCondicionaisAtivas() {
-		long totalAtivas = condicionalService.contarCondicionaisAtivas();
+	public Map<String, Long> getTotalCondicionaisAtivas(@RequestHeader("lojaId") Integer lojaId) {
+		long totalAtivas = condicionalService.contarCondicionaisAtivas(lojaId);
 		return Map.of("totalAtivas", totalAtivas);
 	}
 
 	@GetMapping("/vencendo-hoje")
-	public ResponseEntity<List<Condicional>> getCondicionaisVencendoHoje() {
-		List<Condicional> vencendoHoje = condicionalService.listarCondicionaisVencendoHoje();
+	public ResponseEntity<List<Condicional>> getCondicionaisVencendoHoje(@RequestHeader("lojaId") Integer lojaId) {
+		List<Condicional> vencendoHoje = condicionalService.listarCondicionaisVencendoHoje(lojaId);
 		return ResponseEntity.ok(vencendoHoje);
 	}
 

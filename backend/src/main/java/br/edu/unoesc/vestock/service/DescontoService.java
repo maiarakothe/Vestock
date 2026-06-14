@@ -7,24 +7,29 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Desconto;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.repository.DescontoRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 
 @Service
 public class DescontoService {
 
 	private final DescontoRepository descontoRepository;
+	private final LojaRepository lojaRepository;
 
-	public DescontoService(DescontoRepository descontoRepository) {
+	public DescontoService(DescontoRepository descontoRepository, LojaRepository lojaRepository) {
 		this.descontoRepository = descontoRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todos os descontos.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todos os descontos.
 	 */
-	public List<Desconto> listarTodos() {
-		return descontoRepository.findAll();
+	public List<Desconto> listarTodos(Integer lojaId) {
+		return descontoRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -51,6 +56,14 @@ public class DescontoService {
 	 * @return O desconto salvo.
 	 */
 	public Desconto criarDesconto(Desconto desconto) {
+		if (desconto.getLoja() == null || desconto.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para cadastrar um desconto");
+		}
+
+		Loja loja = lojaRepository.findById(desconto.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada"));
+
+		desconto.setLoja(loja);
 		desconto.setDataCadastro(LocalDateTime.now());
 		return descontoRepository.save(desconto);
 	}

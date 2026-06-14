@@ -42,6 +42,12 @@ public class Loja {
 	/** CNPJ da loja. */
 	@Column(name = "cnploj", length = 18, unique = true)
 	private String cnpj;
+	
+	@Column(name = "emaloj", nullable = false, unique = true)
+	private String email;
+
+	@Column(name = "senhaloj", nullable = false)
+	private String senha;
 
 	public Loja() {
 
@@ -115,4 +121,22 @@ public class Loja {
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	
+	
 }

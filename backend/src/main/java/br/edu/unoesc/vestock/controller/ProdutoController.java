@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,8 +30,8 @@ public class ProdutoController {
 	}
 
 	@GetMapping
-	public List<Produto> listarTodos() {
-		return produtoService.listarTodos();
+	public List<Produto> listarTodos(@RequestHeader("lojaId") Integer lojaId) {
+		return produtoService.listarTodos(lojaId);
 	}
 
 	@GetMapping("/{id}")
@@ -60,21 +61,22 @@ public class ProdutoController {
 	}
 
 	@GetMapping("/com-estoque")
-	public List<Produto> listarComEstoque() {
-		return produtoService.listarApenasComEstoque();
+	public List<Produto> listarComEstoque(@RequestHeader("lojaId") Integer lojaId) {
+		return produtoService.listarApenasComEstoque(lojaId);
 	}
 
 	@GetMapping("/total")
-	public Map<String, Object> getTotalEstoque() {
-		long totalEstoque = produtoService.contarProdutosComEstoque();
-		List<Produto> estoqueBaixo = produtoService.listarEstoqueBaixo(5); // limite de baixo estoque = 5
+	public Map<String, Object> getTotalEstoque(@RequestHeader("lojaId") Integer lojaId) {
+		long totalEstoque = produtoService.contarProdutosComEstoque(lojaId);
+		List<Produto> estoqueBaixo = produtoService.listarEstoqueBaixo(lojaId, 5); // limite de baixo estoque = 5
 
 		return Map.of("totalEstoque", totalEstoque, "estoqueBaixo", estoqueBaixo);
 	}
 
 	@GetMapping("/search")
-	public List<Produto> buscar(@RequestParam("q") String termo) {
-		return produtoService.buscarPorTermo(termo);
+	public List<Produto> buscar(
+			@RequestHeader("lojaId") Integer lojaId,
+			@RequestParam("q") String termo) {
+		return produtoService.buscarPorTermo(lojaId, termo);
 	}
-
 }

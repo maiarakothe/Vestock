@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +29,10 @@ public class ClienteController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Cliente>> listar(@RequestParam(value = "search", required = false) String search) {
-		return ResponseEntity.ok(clienteService.buscar(search));
+	public ResponseEntity<List<Cliente>> listar(
+			@RequestHeader("lojaId") Integer lojaId,
+			@RequestParam(value = "search", required = false) String search) {
+		return ResponseEntity.ok(clienteService.buscar(lojaId, search));
 	}
 
 	@GetMapping("/{id}")
@@ -53,8 +56,8 @@ public class ClienteController {
 	}
 
 	@GetMapping("/total")
-	public Map<String, Long> getTotalClientes() {
-		long total = clienteService.contarClientes();
+	public Map<String, Long> getTotalClientes(@RequestHeader("lojaId") Integer lojaId) {
+		long total = clienteService.contarClientes(lojaId);
 		return Map.of("totalClientes", total);
 	}
 }

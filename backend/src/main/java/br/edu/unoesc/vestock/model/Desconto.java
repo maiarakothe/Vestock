@@ -46,6 +46,11 @@ public class Desconto {
 	@JoinColumn(name = "codven", nullable = true)
 	private Venda venda;
 
+	/** Loja à qual o desconto pertence. */
+	@ManyToOne
+	@JoinColumn(name = "codloj", nullable = false)
+	private Loja loja;
+
 	// Getters e Setters
 
 	public Integer getId() {
@@ -94,5 +99,13 @@ public class Desconto {
 
 	public void setVenda(Venda venda) {
 		this.venda = venda;
+	}
+
+	public Loja getLoja() {
+		return loja;
+	}
+
+	public void setLoja(Loja loja) {
+		this.loja = loja;
 	}
 }

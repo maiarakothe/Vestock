@@ -6,24 +6,29 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import br.edu.unoesc.vestock.model.Cliente;
+import br.edu.unoesc.vestock.model.Loja;
 import br.edu.unoesc.vestock.repository.ClienteRepository;
+import br.edu.unoesc.vestock.repository.LojaRepository;
 
 @Service
 public class ClienteService {
 
 	private final ClienteRepository clienteRepository;
+	private final LojaRepository lojaRepository;
 
-	public ClienteService(ClienteRepository clienteRepository) {
+	public ClienteService(ClienteRepository clienteRepository, LojaRepository lojaRepository) {
 		this.clienteRepository = clienteRepository;
+		this.lojaRepository = lojaRepository;
 	}
 
 	/**
 	 * Lista todos os clientes.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return Uma lista de todos os clientes.
 	 */
-	public List<Cliente> listarTodos() {
-		return clienteRepository.findAll();
+	public List<Cliente> listarTodos(Integer lojaId) {
+		return clienteRepository.findByLojaId(lojaId);
 	}
 
 	/**
@@ -40,15 +45,16 @@ public class ClienteService {
 	/**
 	 * Busca clientes com base em um termo informado.
 	 *
-	 * @param termo O termo de busca
+	 * @param lojaId O ID da loja logada.
+	 * @param termo  O termo de busca
 	 * @return Uma lista de clientes que correspondem ao termo de busca, ou todos os
 	 *         clientes se o termo for nulo ou vazio.
 	 **/
-	public List<Cliente> buscar(String termo) {
+	public List<Cliente> buscar(Integer lojaId, String termo) {
 		if (termo == null || termo.isBlank()) {
-			return listarTodos();
+			return listarTodos(lojaId);
 		}
-		return clienteRepository.buscarPorNomeOuEmail(termo);
+		return clienteRepository.buscarPorTermo(lojaId, termo);
 	}
 
 	/**
@@ -58,6 +64,14 @@ public class ClienteService {
 	 * @return O cliente salvo.
 	 */
 	public Cliente criarCliente(Cliente cliente) {
+		if (cliente.getLoja() == null || cliente.getLoja().getId() == null) {
+			throw new RuntimeException("Loja é obrigatória para cadastrar um cliente");
+		}
+
+		Loja loja = lojaRepository.findById(cliente.getLoja().getId())
+				.orElseThrow(() -> new RuntimeException("Loja não encontrada: " + cliente.getLoja().getId()));
+
+		cliente.setLoja(loja);
 		cliente.setDataCadastro(LocalDateTime.now());
 		return clienteRepository.save(cliente);
 	}
@@ -101,9 +115,10 @@ public class ClienteService {
 	/**
 	 * Conta o número total de clientes.
 	 * 
+	 * @param lojaId O ID da loja logada.
 	 * @return O número total de clientes.
 	 */
-	public long contarClientes() {
-		return clienteRepository.count();
+	public long contarClientes(Integer lojaId) {
+		return clienteRepository.countByLojaId(lojaId);
 	}
 }

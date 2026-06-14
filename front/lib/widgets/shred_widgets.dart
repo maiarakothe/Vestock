@@ -1,4 +1,6 @@
 // lib/widgets/shared_widgets.dart
+import 'package:awidgets/fields/a_field.dart';
+import 'package:awidgets/fields/a_field_text.dart';
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
 
@@ -141,7 +143,7 @@ class FormField2 extends StatelessWidget {
   }
 }
 
-Widget buildAddressSection(Map<String, TextEditingController> c) {
+Widget buildAddressSection() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -150,15 +152,15 @@ Widget buildAddressSection(Map<String, TextEditingController> c) {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
       const SizedBox(height: 12),
       Row(children: [
-        Expanded(child: FormField2(label: 'Rua', controller: c['rua']!, required: true)),
+       AFieldText(label: 'Rua', identifier: 'street', required: true, expanded: true,),
         const SizedBox(width: 12),
-        Expanded(child: FormField2(label: 'Bairro', controller: c['bairro']!, required: true)),
+        AFieldText(label: 'Bairro', identifier: 'neighborhood', required: true, expanded: true,),
       ]),
       const SizedBox(height: 12),
       Row(children: [
-        Expanded(child: FormField2(label: 'Cidade', controller: c['cidade']!, required: true)),
+       AFieldText(label: 'Cidade', identifier: 'city', required: true, expanded: true,),
         const SizedBox(width: 12),
-        Expanded(child: FormField2(label: 'Estado', controller: c['estado']!, required: true)),
+        AFieldText(label: 'Estado', identifier: 'state', required: true, expanded: true, ),
       ]),
     ],
   );
