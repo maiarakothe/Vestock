@@ -13,7 +13,7 @@ import '../../models/condicional.dart';
 import '../../models/item_condicional.dart';
 import '../../models/produto.dart';
 import '../../services/api_service.dart';
-import '../../widgets/shred_widgets.dart';
+import '../../widgets/shared_widgets.dart';
 
 class CondicionalForm extends StatefulWidget {
   final Condicional? condicional;

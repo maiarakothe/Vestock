@@ -1,4 +1,5 @@
 // lib/app_theme.dart
+import 'package:awidgets/custom_theme/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 abstract class DefaultColors {
@@ -57,6 +58,15 @@ ThemeData themeLightData() {
       ),
     ),
     primaryColor: DefaultColors.primary,
+    extensions: <ThemeExtension<dynamic>>[
+      ATheme.defaults().copyWith(
+        buttonColor: DefaultColors.primary,
+        buttonTextColor: Colors.white,
+        cancelButtonTextColor: Colors.grey.shade600,
+        checkBoxColor: DefaultColors.secondary,
+        switchColor: DefaultColors.secondary,
+      ),
+    ],
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.grey.shade100, // Fundo levemente cinza para os campos
       border: OutlineInputBorder(

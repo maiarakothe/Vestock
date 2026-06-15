@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/models/item_venda.dart';
 import 'package:front/pages/venda/venda_form.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../models/venda.dart';
 

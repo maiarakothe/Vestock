@@ -1,13 +1,16 @@
 import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
+import '../../app_theme.dart';
+import '../../widgets/modern_card.dart';
+import '../../constants.dart';
 import '../../../services/api_service.dart';
 import '../../models/cliente.dart';
 import 'cliente_form.dart';
 
 class ClientesScreen extends StatefulWidget {
   const ClientesScreen({super.key});
-  
+
   @override
   State<ClientesScreen> createState() => _ClientesScreenState();
 }
@@ -71,8 +74,9 @@ class _ClientesScreenState extends State<ClientesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final bool isMobile = MediaQuery.of(context).size.width < kMobileBreakpoint;
 
+    return Scaffold(
       body: Column(
         children: <Widget>[
           Padding(
@@ -93,65 +97,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
                 ? const EmptyWidget(message: 'Nenhum cliente encontrado')
                 : RefreshIndicator(
                     onRefresh: () => _load(_search),
-                    child: ListView.builder(
-                      itemCount: _clientes.length,
-                      itemBuilder: (BuildContext ctx, int i) {
-                        final Cliente c = _clientes[i];
-                        return Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            side: BorderSide(
-                              color: Colors.grey.withOpacity(0.1),
-                            ),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: const Color(0xFFEDE7FF),
-                              child: Text(
-                                c.nome[0].toUpperCase(),
-                                style: const TextStyle(
-                                  color: Color(0xFF6744CF),
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              c.nome,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '${c.cpf} • ${c.telefone}\n${c.cidade}',
-                            ),
-                            isThreeLine: true,
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit_outlined,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () => _openForm(c),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () => _delete(c),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: isMobile ? _buildMobileList() : _buildDesktopTable(),
                   ),
           ),
         ],
@@ -161,6 +107,157 @@ class _ClientesScreenState extends State<ClientesScreen> {
         icon: const Icon(Icons.add),
         label: const Text('Novo Cliente'),
       ),
+    );
+  }
+
+  Widget _buildMobileList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(12),
+      itemCount: _clientes.length,
+      itemBuilder: (BuildContext ctx, int i) {
+        final Cliente c = _clientes[i];
+        return ModernCard(
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: DefaultColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                c.nome.isNotEmpty ? c.nome[0].toUpperCase() : '?',
+                style: const TextStyle(
+                  color: DefaultColors.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+          title: c.nome,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('CPF: ${c.cpf}'),
+              Text('Telefone: ${c.telefone}'),
+              if (c.cidade.isNotEmpty) Text('Cidade: ${c.cidade}'),
+            ],
+          ),
+          actions: <Widget>[
+            buildActionButton(
+              icon: Icons.edit_outlined,
+              color: DefaultColors.accent,
+              onTap: () => _openForm(c),
+            ),
+            const SizedBox(width: 8),
+            buildActionButton(
+              icon: Icons.delete_outline,
+              color: DefaultColors.error,
+              onTap: () => _delete(c),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDesktopTable() {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: constraints.maxWidth - 40,
+                ),
+                child: DataTable(
+                  columnSpacing: 40,
+                  headingRowColor: WidgetStateProperty.all(
+                    Colors.grey.withOpacity(0.05),
+                  ),
+                  columns: const <DataColumn>[
+                    DataColumn(
+                      label: Text(
+                        'Nome',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'CPF',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Telefone',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Cidade',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Ações',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                  rows: _clientes.map((Cliente c) {
+                    return DataRow(
+                      cells: <DataCell>[
+                        DataCell(Text(c.nome)),
+                        DataCell(Text(c.cpf)),
+                        DataCell(Text(c.telefone)),
+                        DataCell(Text(c.cidade.isNotEmpty ? c.cidade : '-')),
+                        DataCell(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              buildActionButton(
+                                icon: Icons.edit_outlined,
+                                color: DefaultColors.accent,
+                                onTap: () => _openForm(c),
+                              ),
+                              const SizedBox(width: 8),
+                              buildActionButton(
+                                icon: Icons.delete_outline,
+                                color: DefaultColors.error,
+                                onTap: () => _delete(c),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

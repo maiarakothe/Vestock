@@ -1,7 +1,10 @@
+import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
+import '../../app_theme.dart';
 import '../../models/fornecedor.dart';
+import '../../widgets/modern_card.dart';
 import 'fornecedor_form.dart';
 
 class FornecedoresScreen extends StatefulWidget {
@@ -14,6 +17,7 @@ class FornecedoresScreen extends StatefulWidget {
 class _FornecedoresScreenState extends State<FornecedoresScreen> {
   List<Fornecedor> _items = <Fornecedor>[];
   bool _loading = true;
+  String _search = '';
 
   @override
   void initState() {
@@ -21,12 +25,17 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
     _load();
   }
 
-  Future<void> _load() async {
+  Future<void> _load([String termo = '']) async {
     setState(() => _loading = true);
     try {
-      final dynamic data = await ApiService.get('/api/fornecedores');
+      final String path = termo.isNotEmpty
+          ? '/api/fornecedores?search=${Uri.encodeComponent(termo)}'
+          : '/api/fornecedores';
+      final dynamic data = await ApiService.get(path);
       setState(() {
-        _items = (data as List).map((j) => Fornecedor.fromJson(j)).toList();
+        _items = (data as List)
+            .map((dynamic j) => Fornecedor.fromJson(j))
+            .toList();
         _loading = false;
       });
     } catch (e) {
@@ -43,7 +52,7 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
       builder: (BuildContext context) => FornecedorForm(fornecedor: f),
     );
     if (saved == true) {
-      await _load();
+      await _load(_search);
     }
   }
 
@@ -54,7 +63,7 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
     }
     try {
       await ApiService.delete('/api/fornecedores/${f.id}');
-      await _load();
+      await _load(_search);
     } catch (e) {
       if (mounted) {
         showError(context, e.toString());
@@ -65,54 +74,148 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _loading
-          ? const LoadingWidget()
-          : _items.isEmpty
-          ? const EmptyWidget(message: 'Nenhum fornecedor')
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: _items.length,
-                itemBuilder: (BuildContext ctx, int i) {
-                  final Fornecedor f = _items[i];
-                  return Card(
-                    child: ListTile(
-                      leading: const CircleAvatar(
-                        child: Icon(Icons.local_shipping),
-                      ),
-                      title: Text(
-                        f.nome,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        '${f.cnpj}\n${f.email} • ${f.telefone}\n${f.cidade ?? ''}',
-                      ),
-                      isThreeLine: true,
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              color: Colors.blue,
-                            ),
-                            onPressed: () => _openForm(f),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.red,
-                            ),
-                            onPressed: () => _delete(f),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: AFieldSearch(
+                label: 'Pesquisar fornecedores...',
+                value: _search,
+                onChanged: (String? v) {
+                  setState(() => _search = v ?? '');
+                  _load(_search);
                 },
               ),
             ),
+            Expanded(
+              child: _loading
+                  ? const LoadingWidget()
+                  : _items.isEmpty
+                  ? const EmptyWidget(message: 'Nenhum fornecedor encontrado')
+                  : RefreshIndicator(
+                      onRefresh: () => _load(_search),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: _items.length,
+                        itemBuilder: (BuildContext ctx, int i) {
+                          final Fornecedor f = _items[i];
+                          return ModernCard(
+                            leading: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: <Color>[
+                                    DefaultColors.secondary,
+                                    DefaultColors.primary,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                    color: DefaultColors.secondary.withOpacity(
+                                      .30,
+                                    ),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.local_shipping_rounded,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                            title: f.nome,
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.badge_outlined,
+                                      size: 14,
+                                      color: Colors.grey[500],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        f.cnpj,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.email_outlined,
+                                      size: 14,
+                                      color: Colors.grey[500],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        f.email,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: 14,
+                                      color: Colors.grey[500],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        f.cidade ?? '-',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              buildActionButton(
+                                icon: Icons.edit_outlined,
+                                color: DefaultColors.accent,
+                                onTap: () => _openForm(f),
+                              ),
+                              const SizedBox(width: 8),
+                              buildActionButton(
+                                icon: Icons.delete_outline,
+                                color: DefaultColors.error,
+                                onTap: () => _delete(f),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openForm,
         icon: const Icon(Icons.add),

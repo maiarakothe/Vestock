@@ -3,8 +3,9 @@ import 'package:awidgets/fields/a_field_email.dart';
 import 'package:awidgets/fields/a_field_phone.dart';
 import 'package:awidgets/fields/a_field_text.dart';
 import 'package:awidgets/general/a_form_dialog.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
+import '../../app_theme.dart';
 import '../../models/fornecedor.dart';
 import '../../services/api_service.dart';
 
@@ -56,7 +57,7 @@ class FornecedorForm extends StatelessWidget {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldCNPJ(
               label: 'CNPJ',
               identifier: 'cnpj',
@@ -66,7 +67,6 @@ class FornecedorForm extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldPhone(
@@ -76,7 +76,7 @@ class FornecedorForm extends StatelessWidget {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldEmail(
               label: 'Email',
               identifier: 'email',
@@ -86,18 +86,36 @@ class FornecedorForm extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         AFieldText(
           label: 'Nome Fantasia',
           identifier: 'nomeFantasia',
           value: fornecedor?.nomeFantasia,
         ),
-        const SizedBox(height: 12),
-        AFieldText(label: 'Rua', identifier: 'rua', value: fornecedor?.rua),
-        AFieldText(
-          label: 'Bairro',
-          identifier: 'bairro',
-          value: fornecedor?.bairro,
+        const SizedBox(height: 16),
+        const Text(
+          'Endereço',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: DefaultColors.primary,
+          ),
+        ),
+        const Divider(),
+        Row(
+          children: <Widget>[
+            AFieldText(
+              label: 'Rua',
+              identifier: 'rua',
+              value: fornecedor?.rua,
+              expanded: true,
+            ),
+            const SizedBox(width: 10),
+            AFieldText(
+              label: 'Bairro',
+              identifier: 'bairro',
+              value: fornecedor?.bairro,
+              expanded: true,
+            ),
+          ],
         ),
         Row(
           children: <Widget>[
@@ -107,7 +125,7 @@ class FornecedorForm extends StatelessWidget {
               value: fornecedor?.cidade,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldText(
               label: 'Estado',
               identifier: 'estado',

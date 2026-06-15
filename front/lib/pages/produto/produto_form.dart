@@ -12,7 +12,7 @@ import '../../models/fornecedor.dart';
 import '../../models/loja.dart';
 import '../../models/produto.dart';
 import '../../services/api_service.dart';
-import '../../widgets/shred_widgets.dart';
+import '../../widgets/shared_widgets.dart';
 
 class ProdutoForm extends StatefulWidget {
   final Produto? produto;

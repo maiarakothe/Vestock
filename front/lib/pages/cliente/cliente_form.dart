@@ -59,7 +59,7 @@ class ClienteForm extends StatelessWidget {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldCPF(
               label: 'CPF',
               identifier: 'cpf',
@@ -69,7 +69,6 @@ class ClienteForm extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldPhone(
@@ -79,7 +78,7 @@ class ClienteForm extends StatelessWidget {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldEmail(
               label: 'Email',
               identifier: 'email',
@@ -89,7 +88,6 @@ class ClienteForm extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         AFieldDropDown<String>(
           value: cliente?.sexo.isEmpty == false ? cliente!.sexo : 'M',
           label: 'Sexo',
@@ -102,14 +100,28 @@ class ClienteForm extends StatelessWidget {
         const SizedBox(height: 16),
         const Text(
           'Endereço',
-          style: TextStyle(fontWeight: FontWeight.bold, color: DefaultColors.primary),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: DefaultColors.primary,
+          ),
         ),
         const Divider(),
-        AFieldText(label: 'Rua', identifier: 'rua', value: cliente?.rua),
-        AFieldText(
-          label: 'Bairro',
-          identifier: 'bairro',
-          value: cliente?.bairro,
+        Row(
+          children: <Widget>[
+            AFieldText(
+              label: 'Rua',
+              identifier: 'rua',
+              value: cliente?.rua,
+              expanded: true,
+            ),
+            SizedBox(width: 10),
+            AFieldText(
+              label: 'Bairro',
+              identifier: 'bairro',
+              value: cliente?.bairro,
+              expanded: true,
+            ),
+          ],
         ),
         Row(
           children: <Widget>[
@@ -119,7 +131,7 @@ class ClienteForm extends StatelessWidget {
               value: cliente?.cidade,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             AFieldText(
               label: 'Estado',
               identifier: 'estado',

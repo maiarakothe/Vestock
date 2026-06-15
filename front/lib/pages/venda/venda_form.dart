@@ -13,7 +13,7 @@ import '../../models/desconto.dart';
 import '../../models/funcionario.dart';
 import '../../models/produto.dart';
 import '../../services/api_service.dart';
-import '../../widgets/shred_widgets.dart';
+import '../../widgets/shared_widgets.dart';
 
 class VendaForm extends StatefulWidget {
   const VendaForm({super.key});

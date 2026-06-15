@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../models/condicional.dart';
 import 'condicional_card.dart';

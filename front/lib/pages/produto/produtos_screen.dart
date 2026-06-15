@@ -1,7 +1,7 @@
 import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
 import 'package:front/pages/produto/produto_form.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../models/produto.dart';
 

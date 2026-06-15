@@ -85,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 _items[_selectedIndex].label,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              backgroundColor: Colors.white,
               foregroundColor: DefaultColors.primary,
               elevation: 0,
               centerTitle: true,

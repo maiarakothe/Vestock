@@ -1,8 +1,9 @@
 import 'package:front/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../models/desconto.dart';
+import '../../widgets/modern_card.dart';
 import 'desconto_form.dart';
 
 class DescontosScreen extends StatefulWidget {
@@ -91,96 +92,72 @@ class _DescontosScreenState extends State<DescontosScreen> {
                 itemCount: _items.length,
                 itemBuilder: (BuildContext ctx, int i) {
                   final Desconto d = _items[i];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
+                  return ModernCard(
+                    leading: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: <Color>[
+                            DefaultColors.primary,
+                            DefaultColors.primary.withOpacity(.7),
+                          ],
                         ),
-                      ],
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: DefaultColors.primary.withOpacity(.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${d.valor.toInt()}%',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(16),
-                      leading: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [DefaultColors.primary, DefaultColors.primary.withOpacity(0.7)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: DefaultColors.primary.withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${d.valor.toInt()}%',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        d.nome,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 17,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today_outlined,
-                              size: 14,
-                              color: Colors.grey[500],
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Válido até ${_fmtDate(d.dataValidade)}',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                    title: d.nome,
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Row(
                         children: <Widget>[
-                          _buildActionButton(
-                            icon: Icons.edit_outlined,
-                            color: Colors.blue,
-                            onTap: () => _openForm(d),
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: 14,
+                            color: Colors.grey[500],
                           ),
-                          const SizedBox(width: 8),
-                          _buildActionButton(
-                            icon: Icons.delete_outline,
-                            color: Colors.red,
-                            onTap: () => _delete(d),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Válido até ${_fmtDate(d.dataValidade)}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    actions: <Widget>[
+                      buildActionButton(
+                        icon: Icons.edit_outlined,
+                        color: DefaultColors.accent,
+                        onTap: () => _openForm(d),
+                      ),
+                      const SizedBox(width: 8),
+                      buildActionButton(
+                        icon: Icons.delete_outline,
+                        color: DefaultColors.error,
+                        onTap: () => _delete(d),
+                      ),
+                    ],
                   );
                 },
               ),
@@ -192,25 +169,6 @@ class _DescontosScreenState extends State<DescontosScreen> {
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, size: 28),
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(icon, color: color, size: 20),
-        ),
       ),
     );
   }

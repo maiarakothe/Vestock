@@ -1,6 +1,6 @@
 // lib/screens/dashboard_screen.dart
 import 'package:flutter/material.dart';
-import 'package:front/widgets/shred_widgets.dart';
+import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../../app_theme.dart';
 
