@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Altere para o IP/URL do seu servidor Spring Boot
-  //static String baseUrl = 'http://192.168.0.101:8000';
   static String baseUrl = 'http://localhost:8000';
 
   // Armazena o ID da loja da sessão atual para evitar nulos no banco
