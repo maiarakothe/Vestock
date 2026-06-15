@@ -1,10 +1,9 @@
 import 'package:awidgets/fields/a_drop_option.dart';
+import 'package:awidgets/fields/a_field_date.dart';
 import 'package:awidgets/fields/a_field_drop_down.dart';
 import 'package:awidgets/fields/a_field_email.dart';
 import 'package:awidgets/fields/a_field_phone.dart';
 import 'package:awidgets/fields/a_field_text.dart';
-import 'package:awidgets/general/a_dialog.dart';
-import 'package:awidgets/general/a_form.dart';
 import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
@@ -24,19 +23,26 @@ class FuncionarioForm extends StatelessWidget {
 
   Future<String?> _save(dynamic data) async {
     try {
-      final activeLojaId = lojaId ?? ApiService.lojaId;
+      final int? activeLojaId = lojaId ?? ApiService.lojaId;
       if (activeLojaId == null) {
         return 'Erro: Não foi possível identificar a loja. Tente refazer o login.';
       }
 
-      final body = Funcionario(
+      String? dateToString(dynamic d) {
+        if (d is DateTime) {
+          return d.toIso8601String().substring(0, 10);
+        }
+        return d?.toString();
+      }
+
+      final Map<String, dynamic> body = Funcionario(
         nome: data['nome'],
         cpf: data['cpf'],
         cargo: data['cargo'],
         telefone: data['telefone'] ?? '',
         email: data['email'] ?? '',
         sexo: data['sexo'] ?? 'M',
-        dataAdmissao: data['dataAdmissao'],
+        dataAdmissao: dateToString(data['dataAdmissao']),
         rua: data['rua'] ?? '',
         bairro: data['bairro'] ?? '',
         cidade: data['cidade'] ?? '',
@@ -57,10 +63,10 @@ class FuncionarioForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AFormDialog(
+    return AFormDialog<dynamic>(
       title: funcionario == null ? 'Novo Funcionário' : 'Editar Funcionário',
       width: 500,
-      fields: [
+      fields: <Widget>[
         AFieldText(
           label: 'Nome',
           identifier: 'nome',
@@ -94,17 +100,17 @@ class FuncionarioForm extends StatelessWidget {
           label: 'Sexo',
           identifier: 'sexo',
           value: funcionario?.sexo ?? 'M',
-          options: const [
-            AOption(value: 'M', label: 'Masculino'),
-            AOption(value: 'F', label: 'Feminino'),
+          options: const <AOption<String>>[
+            AOption<String>(value: 'M', label: 'Masculino'),
+            AOption<String>(value: 'F', label: 'Feminino'),
           ],
         ),
-        AFieldText(
-          label: 'Admissão (AAAA-MM-DD)',
+        AFieldDate(
+          label: 'Admissão',
           identifier: 'dataAdmissao',
           value:
-              funcionario?.dataAdmissao?.substring(0, 10) ??
-              DateTime.now().toIso8601String().substring(0, 10),
+              DateTime.tryParse(funcionario?.dataAdmissao ?? '') ??
+              DateTime.now(),
           required: true,
         ),
         AFieldText(label: 'Rua', identifier: 'rua', value: funcionario?.rua),

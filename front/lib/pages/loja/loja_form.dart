@@ -64,7 +64,7 @@ class LojaForm extends StatelessWidget {
         const SizedBox(height: 8),
         const Text(
           'Endereço',
-          style: TextStyle(fontWeight: FontWeight.bold, color: kPrimary),
+          style: TextStyle(fontWeight: FontWeight.bold, color: DefaultColors.primary),
         ),
         const Divider(),
         AFieldText(

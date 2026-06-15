@@ -6,7 +6,7 @@ import '../../../app_theme.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
-  
+
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -54,7 +54,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: _loading
           ? const LoadingWidget()
           : RefreshIndicator(
@@ -121,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             _KpiCard(
               icon: Icons.inventory_2_outlined,
-              color: kPrimary,
+              color: DefaultColors.primary,
               title: 'Estoque',
               value: _totalEstoque.toString(),
               subtitle: 'Itens disponíveis',

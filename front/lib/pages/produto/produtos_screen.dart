@@ -72,7 +72,6 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: Column(
         children: <Widget>[
           Padding(

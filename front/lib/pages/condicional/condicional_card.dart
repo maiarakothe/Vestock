@@ -33,10 +33,10 @@ class CondicionalCard extends StatelessWidget {
           radius: 22,
           backgroundColor: c.devolvido
               ? Colors.green[50]
-              : kPrimary.withOpacity(0.1),
+              : DefaultColors.primary.withOpacity(0.1),
           child: Icon(
             c.devolvido ? Icons.check_circle : Icons.loop,
-            color: c.devolvido ? Colors.green : kPrimary,
+            color: c.devolvido ? Colors.green : DefaultColors.primary,
             size: 20,
           ),
         ),

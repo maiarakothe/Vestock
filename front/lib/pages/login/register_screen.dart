@@ -48,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return AForm<Map<String, dynamic>?>(
       key: formKey,
       showDefaultAction: false,
+      padding: const EdgeInsets.all(0),
       fields: <Widget>[
         AFieldText(
           label: 'Nome da Empresa',
@@ -64,18 +65,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
         AFieldText(label: 'Cidade', identifier: 'city', required: true),
       ],
       actions: <Widget>[
-        Row(
-          children: <Widget>[
-            AButton(
-              text: 'Cadastrar Empresa',
-              expanded: true,
-              height: 40,
-              loading: _loading,
-              onPressed: () {
-                formKey.currentState?.onSubmit();
-              },
+        const SizedBox(height: 18),
+        Container(
+          height: 48,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [DefaultColors.primary, DefaultColors.secondary],
             ),
-          ],
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: DefaultColors.primary.withOpacity(.25),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: AButton(
+            text: 'Cadastrar Empresa',
+            expanded: true,
+            loading: _loading,
+            fontSize: 14,
+            elevation: 0,
+            color: Colors.transparent,
+            onPressed: () {
+              formKey.currentState?.onSubmit();
+            },
+          ),
         ),
       ],
       onSuccess: () {
@@ -91,36 +107,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3EEFF),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: AuthCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.checkroom, size: 64, color: kPrimary),
-                const SizedBox(height: 8),
-                const Text(
-                  'Vestock',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: kPrimary,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: AuthCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.asset('assets/images/logo-2-cortado.png', width: 280),
+                  form(),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(height: 10),
+                      Text(
+                        'Já possui conta?',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Entrar',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: DefaultColors.secondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                form(),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Já possui conta? Entrar',
-                    style: TextStyle(color: kPrimary),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

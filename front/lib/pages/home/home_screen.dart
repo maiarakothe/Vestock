@@ -1,4 +1,3 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../../../app_theme.dart';
 import '../../services/api_service.dart';
@@ -13,6 +12,7 @@ import '../funcionario/funcionarios_screen.dart';
 import '../fornecedor/fornecedores_screen.dart';
 import '../loja/lojas_screen.dart';
 import '../login/login_screen.dart';
+import '../../widgets/theme_switcher_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,12 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _verificarFuncionario();
   }
 
-  final List<_NavItem> _items = [
+  final List<_NavItem> _items = <_NavItem>[
     _NavItem(Icons.speed, 'Dashboard', const DashboardScreen()),
     _NavItem(Icons.inventory_2_outlined, 'Produtos', const ProdutosScreen()),
+    _NavItem(Icons.loop, 'Condicional', const CondicionalScreen()),
     _NavItem(Icons.shopping_cart_outlined, 'Vendas', const VendasScreen()),
     _NavItem(Icons.people_outline, 'Clientes', const ClientesScreen()),
-    _NavItem(Icons.loop, 'Condicional', const CondicionalScreen()),
     _NavItem(Icons.local_offer_outlined, 'Descontos', const DescontosScreen()),
     _NavItem(Icons.badge_outlined, 'Funcionários', const FuncionariosScreen()),
     _NavItem(
@@ -75,48 +75,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width >= 1100;
-
+    final bool isWide = MediaQuery.of(context).size.width >= 1100;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: isWide
           ? null
           : AppBar(
               title: Text(
                 _items[_selectedIndex].label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1C1E),
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               backgroundColor: Colors.white,
-              foregroundColor: kPrimary,
+              foregroundColor: DefaultColors.primary,
               elevation: 0,
               centerTitle: true,
             ),
       drawer: isWide ? null : _buildDrawer(),
       body: isWide
           ? Row(
-              children: [
+              children: <Widget>[
                 _buildSideNav(),
                 Expanded(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(32),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(.05),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
-                            blurRadius: 10,
-                            offset: const Offset(-5, 0),
-                          ),
-                        ],
-                      ),
-                      child: _items[_selectedIndex].screen,
-                    ),
+                    child: _items[_selectedIndex].screen,
                   ),
                 ),
               ],
@@ -127,111 +119,125 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildDrawer() {
     return Drawer(
-      backgroundColor: Colors.white,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kPrimary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.checkroom, color: kPrimary, size: 30),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Vestock',
-                  style: TextStyle(
-                    color: kPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _items.length,
-              itemBuilder: (ctx, i) => _buildMenuItem(i),
-            ),
-          ),
-        ],
-      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      child: _buildSideNavContent(),
     );
   }
 
   Widget _buildSideNav() {
     return Container(
-      width: 260,
-      color: const Color(0xFFF8F9FE),
+      width: 290,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+        ),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(32),
+          bottomRight: Radius.circular(32),
+        ),
+      ),
+      child: _buildSideNavContent(),
+    );
+  }
+
+  Widget _buildSideNavContent() {
+    return Column(
+      children: <Widget>[
+        _buildSideHeader(),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: _items.length,
+            itemBuilder: (BuildContext ctx, int i) => _buildMenuItem(i),
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+          child: ThemeSwitcherTile(),
+        ),
+        _buildLogoutSection(),
+      ],
+    );
+  }
+
+  Widget _buildSideHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: Column(
-        children: [
+        children: <Widget>[
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: kPrimary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.checkroom, color: kPrimary, size: 28),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Vestock',
-                  style: TextStyle(
-                    color: Color(0xFF1A1C1E),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
             ),
+            child: Image.asset('assets/images/logo-2-cortado.png', width: 170),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _items.length,
-              itemBuilder: (ctx, i) => _buildMenuItem(i),
-            ),
-          ),
-          _buildLogoutSection(),
         ],
       ),
     );
   }
 
   Widget _buildMenuItem(int i) {
-    final isSelected = _selectedIndex == i;
+    final bool selected = _selectedIndex == i;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: ListTile(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
         onTap: () {
-          setState(() => _selectedIndex = i);
-          if (Navigator.canPop(context)) Navigator.pop(context);
+          setState(() {
+            _selectedIndex = i;
+          });
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        selected: isSelected,
-        selectedTileColor: kPrimary.withOpacity(0.08),
-        leading: Icon(
-          _items[i].icon,
-          color: isSelected ? kPrimary : const Color(0xFF74777F),
-          size: 22,
-        ),
-        title: Text(
-          _items[i].label,
-          style: TextStyle(
-            color: isSelected ? kPrimary : const Color(0xFF44474E),
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            fontSize: 14,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: selected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: selected
+                      ? DefaultColors.primary.withOpacity(.12)
+                      : Colors.white.withOpacity(.12),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  _items[i].icon,
+                  color: selected ? DefaultColors.primary : Colors.white,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  _items[i].label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: selected ? DefaultColors.primary : Colors.white,
+                  ),
+                ),
+              ),
+              if (selected)
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: DefaultColors.primary,
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -240,34 +246,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLogoutSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF1F1F1)),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-        leading: const CircleAvatar(
-          backgroundColor: Color(0xFFFFEBEE),
-          child: Icon(Icons.logout_rounded, color: Colors.red, size: 20),
-        ),
-        title: const Text(
-          'Sair',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        subtitle: const Text(
-          'Finalizar sessão',
-          style: TextStyle(fontSize: 11),
-        ),
+      margin: const EdgeInsets.all(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
         onTap: () {
-          ApiService.lojaId = null; // IMPORTANTE: Limpa o ID da loja ao sair
+          ApiService.lojaId = null;
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            MaterialPageRoute<dynamic>(builder: (_) => const LoginScreen()),
           );
         },
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(.12),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: const Row(
+            children: <Widget>[
+              Icon(Icons.logout_rounded, color: Colors.white),
+              SizedBox(width: 12),
+              Text(
+                'Sair',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

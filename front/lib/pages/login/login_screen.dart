@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return AForm<dynamic>(
       key: formKey,
       showDefaultAction: false,
+      padding: const EdgeInsets.all(0),
       fields: <Widget>[
         AFieldEmail(
           label: 'Email',
@@ -54,11 +55,30 @@ class _LoginScreenState extends State<LoginScreen> {
         AFieldPassword(label: 'Senha', identifier: 'password'),
       ],
       actions: <Widget>[
-        AButton(
-          text: 'Entrar',
-          expanded: true,
-          height: 40,
-          onPressed: () => formKey.currentState?.onSubmit(),
+        const SizedBox(height: 18),
+        Container(
+          height: 48,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+            ),
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: DefaultColors.primary.withOpacity(.25),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: AButton(
+            text: 'Entrar',
+            expanded: true,
+            fontSize: 14,
+            elevation: 0,
+            color: Colors.transparent,
+            onPressed: () => formKey.currentState?.onSubmit(),
+          ),
         ),
       ],
       onSubmit: _login,
@@ -74,41 +94,58 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3EEFF),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: AuthCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.checkroom, size: 64, color: kPrimary),
-                const SizedBox(height: 8),
-                const Text(
-                  'Vestock',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: kPrimary,
-                  ),
-                ),
-                form(),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (_) => const RegisterScreen(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: AuthCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.asset('assets/images/logo-2-cortado.png', width: 280),
+                  form(),
+                  const SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(height: 10),
+                      Text(
+                        'Não possui conta?',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    );
-                  },
-                  child: const Text(
-                    'Criar conta',
-                    style: TextStyle(color: kPrimary),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<dynamic>(
+                              builder: (_) => const RegisterScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Criar conta',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: DefaultColors.secondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -106,7 +106,7 @@ void showError(BuildContext context, String msg) {
 
 void showSuccess(BuildContext context, String msg) {
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(msg), backgroundColor: kAccent),
+    SnackBar(content: Text(msg), backgroundColor: DefaultColors.accent),
   );
 }
 

@@ -102,7 +102,6 @@ class _CondicionalScreenState extends State<CondicionalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: _loading
           ? const LoadingWidget()
           : _items.isEmpty

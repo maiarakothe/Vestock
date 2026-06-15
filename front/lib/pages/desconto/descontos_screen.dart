@@ -80,7 +80,6 @@ class _DescontosScreenState extends State<DescontosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: _loading
           ? const LoadingWidget()
           : _items.isEmpty
@@ -88,80 +87,96 @@ class _DescontosScreenState extends State<DescontosScreen> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
+                padding: const EdgeInsets.all(20),
                 itemCount: _items.length,
                 itemBuilder: (BuildContext ctx, int i) {
                   final Desconto d = _items[i];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: kPrimary.withOpacity(0.1),
-                        child: Text(
-                          '${d.valor.toInt()}%',
-                          style: const TextStyle(
-                            color: kPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [DefaultColors.primary, DefaultColors.primary.withOpacity(0.7)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: DefaultColors.primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${d.valor.toInt()}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
                       title: Text(
                         d.nome,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 17,
+                          letterSpacing: -0.5,
                         ),
                       ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Início: ${_fmtDate(d.dataCadastro?.substring(0, 10))}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today_outlined,
+                              size: 14,
+                              color: Colors.grey[500],
                             ),
-                          ),
-                          Text(
-                            'Validade: ${_fmtDate(d.dataValidade)}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
+                            const SizedBox(width: 6),
+                            Text(
+                              'Válido até ${_fmtDate(d.dataValidade)}',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              color: Colors.blue,
-                            ),
-                            onPressed: () => _openForm(d),
+                          _buildActionButton(
+                            icon: Icons.edit_outlined,
+                            color: Colors.blue,
+                            onTap: () => _openForm(d),
                           ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.red,
-                            ),
-                            onPressed: () => _delete(d),
+                          const SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.delete_outline,
+                            color: Colors.red,
+                            onTap: () => _delete(d),
                           ),
                         ],
                       ),
@@ -170,10 +185,32 @@ class _DescontosScreenState extends State<DescontosScreen> {
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Desconto'),
+        backgroundColor: DefaultColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: const Icon(Icons.add, size: 28),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(icon, color: color, size: 20),
+        ),
       ),
     );
   }

@@ -275,7 +275,7 @@ class VendaFormState extends State<VendaForm> {
                 'Total',
                 'R\$ ${valorTotal.toStringAsFixed(2)}',
                 bold: true,
-                color: kPrimary,
+                color: DefaultColors.primary,
               ),
             ],
           ),
@@ -325,7 +325,6 @@ class ItemVendaTemp {
 
   double get subtotal => quantidade * valorUnitario;
 }
-
 
 class ItemRow extends StatefulWidget {
   final ItemVendaTemp item;

@@ -102,7 +102,7 @@ class ClienteForm extends StatelessWidget {
         const SizedBox(height: 16),
         const Text(
           'Endereço',
-          style: TextStyle(fontWeight: FontWeight.bold, color: kPrimary),
+          style: TextStyle(fontWeight: FontWeight.bold, color: DefaultColors.primary),
         ),
         const Divider(),
         AFieldText(label: 'Rua', identifier: 'rua', value: cliente?.rua),

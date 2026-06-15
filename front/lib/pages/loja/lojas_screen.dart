@@ -54,7 +54,6 @@ class _LojasScreenState extends State<LojasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: _loading
           ? const LoadingWidget()
           : _lojas.isEmpty
@@ -120,7 +119,7 @@ class _LojasScreenState extends State<LojasScreen> {
                                       ),
                                       label: const Text('Editar Dados'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: kPrimary,
+                                        backgroundColor: DefaultColors.primary,
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 16,
@@ -154,14 +153,10 @@ class _LojasScreenState extends State<LojasScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: kPrimary.withOpacity(0.1),
+            color: DefaultColors.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: const Icon(
-            Icons.storefront_rounded,
-            color: kPrimary,
-            size: 32,
-          ),
+          child: const Icon(Icons.storefront_rounded, color: DefaultColors.primary, size: 32),
         ),
         const SizedBox(width: 16),
         Expanded(

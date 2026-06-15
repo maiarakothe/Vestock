@@ -56,7 +56,6 @@ class _VendasScreenState extends State<VendasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
       body: _loading
           ? const LoadingWidget()
           : _vendas.isEmpty
