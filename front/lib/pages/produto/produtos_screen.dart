@@ -2,8 +2,11 @@ import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
 import 'package:front/pages/produto/produto_form.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/app_table.dart';
 import '../../../services/api_service.dart';
+import '../../app_theme.dart';
 import '../../models/produto.dart';
+import '../../widgets/modern_card.dart';
 
 class ProdutosScreen extends StatefulWidget {
   const ProdutosScreen({super.key});
@@ -92,92 +95,59 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
                 ? const EmptyWidget(message: 'Nenhum produto encontrado')
                 : RefreshIndicator(
                     onRefresh: () => _load(_search),
-                    child: ListView.builder(
-                      itemCount: _produtos.length,
-                      itemBuilder: (BuildContext ctx, int i) {
-                        final Produto p = _produtos[i];
-                        final MaterialColor estoqueColor =
-                            p.quantidadeEstoque <= 5
-                            ? Colors.red
-                            : p.quantidadeEstoque <= 15
-                            ? Colors.orange
-                            : Colors.green;
-                        return Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            side: BorderSide(
-                              color: Colors.grey.withOpacity(0.1),
-                            ),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: const Color(0xFFEDE7FF),
-                              child: Text(
-                                p.nome[0].toUpperCase(),
-                                style: const TextStyle(
-                                  color: Color(0xFF6744CF),
-                                ),
-                              ),
-                            ),
-                            title: Text(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: AppTable<Produto>(
+                        columns: const <String>[
+                          'Nome',
+                          'Tipo',
+                          'Estoque',
+                          'Preço',
+                          'Ações',
+                        ],
+                        items: _produtos,
+                        onTap: _openForm,
+                        rowBuilder: (Produto p) => <DataCell>[
+                          DataCell(
+                            Text(
                               p.nome,
                               style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          DataCell(Text(p.tipo ?? '-')),
+                          DataCell(
+                            Text(
+                              '${p.quantidadeEstoque}',
+                              style: TextStyle(
+                                color: p.quantidadeEstoque <= 5
+                                    ? Colors.red
+                                    : Colors.green,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text(
-                              '${p.tipo ?? ''} • ${p.tamanho ?? ''} • ${p.cor ?? ''}\n'
-                              'Venda: R\$ ${p.venda.toStringAsFixed(2)}',
-                            ),
-                            isThreeLine: true,
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
+                          ),
+                          DataCell(Text('R\$ ${p.venda.toStringAsFixed(2)}')),
+                          DataCell(
+                            Row(
                               children: <Widget>[
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      '${p.quantidadeEstoque}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: estoqueColor,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text(
-                                      'estoque',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
+                                buildActionButton(
+                                  icon: Icons.edit_outlined,
+                                  color: DefaultColors.accent,
+                                  onTap: () => _openForm(p),
                                 ),
-                                const SizedBox(width: 4),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit_outlined,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () => _openForm(p),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () => _delete(p),
+                                const SizedBox(width: 8),
+                                buildActionButton(
+                                  icon: Icons.delete_outline,
+                                  color: DefaultColors.error,
+                                  onTap: () => _delete(p),
                                 ),
                               ],
                             ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   ),
           ),

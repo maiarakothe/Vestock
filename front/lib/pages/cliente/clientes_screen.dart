@@ -1,6 +1,7 @@
 import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/app_table.dart';
 import '../../app_theme.dart';
 import '../../widgets/modern_card.dart';
 import '../../constants.dart';
@@ -164,101 +165,39 @@ class _ClientesScreenState extends State<ClientesScreen> {
   }
 
   Widget _buildDesktopTable() {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.grey.withOpacity(0.1)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: AppTable<Cliente>(
+        columns: const ['Nome', 'CPF', 'Telefone', 'Cidade', 'Ações'],
+        items: _clientes,
+        onTap: (Cliente c) => _openForm(c),
+        rowBuilder: (Cliente c) => <DataCell>[
+          DataCell(
+            Text(c.nome, style: const TextStyle(fontWeight: FontWeight.w600)),
+          ),
+          DataCell(Text(c.cpf)),
+          DataCell(Text(c.telefone)),
+          DataCell(Text(c.cidade.isNotEmpty ? c.cidade : '-')),
+          DataCell(
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                buildActionButton(
+                  icon: Icons.edit_outlined,
+                  color: DefaultColors.accent,
+                  onTap: () => _openForm(c),
+                ),
+                const SizedBox(width: 8),
+                buildActionButton(
+                  icon: Icons.delete_outline,
+                  color: DefaultColors.error,
+                  onTap: () => _delete(c),
                 ),
               ],
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: constraints.maxWidth - 40,
-                ),
-                child: DataTable(
-                  columnSpacing: 40,
-                  headingRowColor: WidgetStateProperty.all(
-                    Colors.grey.withOpacity(0.05),
-                  ),
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        'Nome',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'CPF',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Telefone',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Cidade',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Ações',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                  rows: _clientes.map((Cliente c) {
-                    return DataRow(
-                      cells: <DataCell>[
-                        DataCell(Text(c.nome)),
-                        DataCell(Text(c.cpf)),
-                        DataCell(Text(c.telefone)),
-                        DataCell(Text(c.cidade.isNotEmpty ? c.cidade : '-')),
-                        DataCell(
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              buildActionButton(
-                                icon: Icons.edit_outlined,
-                                color: DefaultColors.accent,
-                                onTap: () => _openForm(c),
-                              ),
-                              const SizedBox(width: 8),
-                              buildActionButton(
-                                icon: Icons.delete_outline,
-                                color: DefaultColors.error,
-                                onTap: () => _delete(c),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
