@@ -74,6 +74,7 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -216,10 +217,51 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Fornecedor'),
+      floatingActionButton: Container(
+        height: 58,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: <Color>[
+              Color(0xFF7533FE),
+              Color(0xFF4F7CFF),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: const Color(0xFF7533FE).withOpacity(.4),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: _openForm,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 22,
+                vertical: 14,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(Icons.add, color: Colors.white),
+                  SizedBox(width: 8),
+                  Text(
+                    'Novo Fornecedor',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

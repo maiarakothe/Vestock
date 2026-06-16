@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:front/constants.dart';
 import '../../../app_theme.dart';
 import '../../services/api_service.dart';
+import '../../widgets/desktop_app_bar.dart';
+import '../../widgets/floating_bottom_bar.dart';
+import '../../widgets/modern_side_nav.dart';
+import '../../widgets/top_bar.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../cliente/clientes_screen.dart';
 import '../funcionario/funcionario_form.dart';
@@ -12,7 +17,6 @@ import '../funcionario/funcionarios_screen.dart';
 import '../fornecedor/fornecedores_screen.dart';
 import '../loja/lojas_screen.dart';
 import '../login/login_screen.dart';
-import '../../widgets/theme_switcher_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +24,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
 
   @override
@@ -38,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
     try {
-      final funcionarios = await ApiService.get('/api/funcionarios');
+      final dynamic funcionarios = await ApiService.get('/api/funcionarios');
 
       if (funcionarios is List && funcionarios.isEmpty) {
         _abrirCadastroFuncionario();
@@ -54,235 +58,158 @@ class _HomeScreenState extends State<HomeScreen> {
       barrierDismissible: false,
       builder: (_) => const FuncionarioForm(persistent: true),
     );
-    _verificarFuncionario();
+    await _verificarFuncionario();
   }
 
-  final List<_NavItem> _items = <_NavItem>[
-    _NavItem(Icons.speed, 'Dashboard', const DashboardScreen()),
-    _NavItem(Icons.inventory_2_outlined, 'Produtos', const ProdutosScreen()),
-    _NavItem(Icons.loop, 'Condicional', const CondicionalScreen()),
-    _NavItem(Icons.shopping_cart_outlined, 'Vendas', const VendasScreen()),
-    _NavItem(Icons.people_outline, 'Clientes', const ClientesScreen()),
-    _NavItem(Icons.local_offer_outlined, 'Descontos', const DescontosScreen()),
-    _NavItem(Icons.badge_outlined, 'Funcionários', const FuncionariosScreen()),
-    _NavItem(
-      Icons.local_shipping_outlined,
-      'Fornecedores',
-      const FornecedoresScreen(),
+  List<NavItem> get _items => <NavItem>[
+    NavItem(
+      Icons.space_dashboard_rounded,
+      'Dashboard',
+      const DashboardScreen(),
+      primary: true,
     ),
-    _NavItem(Icons.store_outlined, 'Lojas', const LojasScreen()),
+    NavItem(
+      Icons.inventory_2_rounded,
+      'Produtos',
+      ProdutosScreen(),
+      primary: true,
+    ),
+    NavItem(Icons.sync_alt_rounded, 'Condicional', CondicionalScreen()),
+    NavItem(
+      Icons.point_of_sale_rounded,
+      'Vendas',
+      VendasScreen(),
+      primary: true,
+    ),
+    NavItem(Icons.groups_rounded, 'Clientes', ClientesScreen(), primary: true),
+    NavItem(Icons.local_offer_rounded, 'Descontos', DescontosScreen()),
+    NavItem(Icons.badge_rounded, 'Funcionários', FuncionariosScreen()),
+    NavItem(Icons.local_shipping_rounded, 'Fornecedores', FornecedoresScreen()),
+    NavItem(Icons.storefront_rounded, 'Minha Loja', const LojasScreen()),
   ];
+
+  List<int> get _bottomItems => <int>[
+    for (int i = 0; i < _items.length; i++)
+      if (_items[i].primary) i,
+  ];
+
+  bool get _isDark => Theme.of(context).brightness == Brightness.dark;
+
+  void _toggleTheme() {
+    themeNotifier.value = themeNotifier.value == ThemeMode.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
+  }
+
+  void _irParaLojas() {
+    setState(() => _selectedIndex = 8);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  }
+
+  void _logout() {
+    ApiService.lojaId = null;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute<dynamic>(builder: (_) => const LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bool isWide = MediaQuery.of(context).size.width >= 1100;
+    final bool isMobile = MediaQuery.of(context).size.width < kMobileBreakpoint;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: isWide
-          ? null
-          : AppBar(
-              title: Text(
-                _items[_selectedIndex].label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+      appBar: isMobile
+          ? TopBar(
+              title: _items[_selectedIndex].label,
+              isDark: _isDark,
+              onToggleTheme: _toggleTheme,
+              onAvatarTap: _irParaLojas,
+            )
+          : null,
+      drawer: isMobile
+          ? Drawer(
+              backgroundColor: Theme.of(context).cardColor,
+              child: SafeArea(
+                child: ModernSideNav(
+                  items: _items.where((NavItem i) => i.label != 'Minha Loja').toList(),
+                  selectedIndex: _selectedIndex,
+                  onSelect: (int i) {
+                    setState(() => _selectedIndex = i);
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  onAvatarTap: _irParaLojas,
+                  onLogout: _logout,
+                ),
               ),
-              foregroundColor: DefaultColors.primary,
-              elevation: 0,
-              centerTitle: true,
-            ),
-      drawer: isWide ? null : _buildDrawer(),
-      body: isWide
+            )
+          : null,
+      body: !isMobile
           ? Row(
               children: <Widget>[
-                _buildSideNav(),
+                ModernSideNav(
+                  items: _items.where((NavItem i) => i.label != 'Minha Loja').toList(),
+                  selectedIndex: _selectedIndex,
+                  onSelect: (int i) => setState(() => _selectedIndex = i),
+                  onAvatarTap: _irParaLojas,
+                  onLogout: _logout,
+                ),
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(32),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                  child: Column(
+                    children: <Widget>[
+                      DesktopAppBar(
+                        title: _items[_selectedIndex].label,
+                        isDark: _isDark,
+                        onAvatarTap: _irParaLojas,
+                        onToggleTheme: _toggleTheme,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 16, 16),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(.04),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: _items[_selectedIndex].screen,
+                          ),
                         ),
-                      ],
-                    ),
-                    child: _items[_selectedIndex].screen,
+                      ),
+                    ],
                   ),
                 ),
               ],
             )
           : _items[_selectedIndex].screen,
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      backgroundColor: Theme.of(context).primaryColor,
-      child: _buildSideNavContent(),
-    );
-  }
-
-  Widget _buildSideNav() {
-    return Container(
-      width: 290,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
-        ),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-      ),
-      child: _buildSideNavContent(),
-    );
-  }
-
-  Widget _buildSideNavContent() {
-    return Column(
-      children: <Widget>[
-        _buildSideHeader(),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _items.length,
-            itemBuilder: (BuildContext ctx, int i) => _buildMenuItem(i),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-          child: ThemeSwitcherTile(),
-        ),
-        _buildLogoutSection(),
-      ],
-    );
-  }
-
-  Widget _buildSideHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Image.asset('assets/images/logo-2-cortado.png', width: 170),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenuItem(int i) {
-    final bool selected = _selectedIndex == i;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          setState(() {
-            _selectedIndex = i;
-          });
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: selected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: selected
-                      ? DefaultColors.primary.withOpacity(.12)
-                      : Colors.white.withOpacity(.12),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(
-                  _items[i].icon,
-                  color: selected ? DefaultColors.primary : Colors.white,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  _items[i].label,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: selected ? DefaultColors.primary : Colors.white,
-                  ),
-                ),
-              ),
-              if (selected)
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: DefaultColors.primary,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogoutSection() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () {
-          ApiService.lojaId = null;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute<dynamic>(builder: (_) => const LoginScreen()),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(.12),
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: const Row(
-            children: <Widget>[
-              Icon(Icons.logout_rounded, color: Colors.white),
-              SizedBox(width: 12),
-              Text(
-                'Sair',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: isMobile
+          ? FloatingBottomBar(
+              items: _items,
+              indices: _bottomItems,
+              selectedIndex: _selectedIndex,
+              onSelect: (int i) => setState(() => _selectedIndex = i),
+            )
+          : null,
     );
   }
 }
 
-class _NavItem {
+class NavItem {
   final IconData icon;
   final String label;
   final Widget screen;
-  const _NavItem(this.icon, this.label, this.screen);
+  final bool primary;
+  const NavItem(this.icon, this.label, this.screen, {this.primary = false});
 }

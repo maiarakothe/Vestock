@@ -77,6 +77,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
     final bool isMobile = MediaQuery.of(context).size.width < kMobileBreakpoint;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
         children: <Widget>[
           Padding(

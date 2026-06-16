@@ -72,6 +72,7 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
         children: <Widget>[
           Padding(

@@ -54,6 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: _loading
           ? const LoadingWidget()
           : RefreshIndicator(
@@ -67,8 +68,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _buildHeader(),
-                    const SizedBox(height: 32),
                     _buildKpiSection(),
                     const SizedBox(height: 40),
                     _buildAlertsSection(),
@@ -78,26 +77,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Dashboard',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1C1E),
-          ),
-        ),
-        Text(
-          'Visão geral da sua loja hoje',
-          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-        ),
-      ],
     );
   }
 
@@ -160,7 +139,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: Color(0xFF1A1C1E),
               ),
             ),
           ],
@@ -209,15 +187,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Color(0xFF1A1C1E),
           ),
         ),
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFF1F1F1)),
           ),
           child: _estoqueBaixo.isEmpty
               ? const Padding(
@@ -292,7 +268,7 @@ class _KpiCard extends StatelessWidget {
       width: width,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(24),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -330,7 +306,6 @@ class _KpiCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1C1E),
                       ),
                     ),
                     const SizedBox(height: 2),
