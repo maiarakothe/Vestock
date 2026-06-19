@@ -29,13 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response != null) {
         ApiService.lojaId =
             response['lojaId'] ??
-            response['idLoja'] ??
-            response['loja']?['id'] ??
-            response['id'];
+                response['idLoja'] ??
+                response['loja']?['id'] ??
+                response['id'];
         debugPrint('ID da Loja definido como: ${ApiService.lojaId}');
       }
       return null;
-    } catch (e) {
+    }catch (e, stack) {
+      debugPrint('ERRO LOGIN: $e');
+      debugPrint('DICA: Verifique se o IP ${ApiService.baseUrl} está correto e acessível pelo celular.');
+      debugPrintStack(stackTrace: stack);
       return e.toString();
     }
   }

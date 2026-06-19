@@ -8,6 +8,7 @@ import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_theme.dart';
+import '../../constants.dart';
 import '../../models/cliente.dart';
 import '../../models/desconto.dart';
 import '../../models/funcionario.dart';
@@ -158,6 +159,7 @@ class VendaFormState extends State<VendaForm> {
       title: 'Nova Venda',
       width: 700,
       persistent: false,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         Row(
           children: <Widget>[
@@ -191,7 +193,6 @@ class VendaFormState extends State<VendaForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             Expanded(
@@ -217,7 +218,6 @@ class VendaFormState extends State<VendaForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         AFieldDropDown<int?>(
           label: 'Cupom de Desconto',
           identifier: 'desconto',
@@ -362,7 +362,6 @@ class ItemRowState extends State<ItemRow> {
         padding: const EdgeInsets.all(10),
         child: Row(
           children: <Widget>[
-            // Produce select
             Expanded(
               flex: 5,
               child: AFieldDropDownWithCounts<int?>(

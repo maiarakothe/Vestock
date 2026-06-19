@@ -7,6 +7,7 @@ import 'package:awidgets/fields/a_field_text.dart';
 import 'package:awidgets/fields/a_field_text_expandable.dart';
 import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:front/constants.dart';
 
 import '../../models/fornecedor.dart';
 import '../../models/loja.dart';
@@ -141,6 +142,7 @@ class ProdutoFormState extends State<ProdutoForm> {
       title: widget.produto == null ? 'Novo Produto' : 'Editar Produto',
       persistent: false,
       width: 600,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         AFieldText(
           label: 'Nome do Produto',
@@ -148,7 +150,6 @@ class ProdutoFormState extends State<ProdutoForm> {
           value: widget.produto?.nome,
           required: true,
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldText(
@@ -158,7 +159,7 @@ class ProdutoFormState extends State<ProdutoForm> {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             AFieldText(
               label: 'Cor',
               identifier: 'cor',
@@ -168,7 +169,6 @@ class ProdutoFormState extends State<ProdutoForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldText(
@@ -180,7 +180,6 @@ class ProdutoFormState extends State<ProdutoForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldMoney(
@@ -190,7 +189,7 @@ class ProdutoFormState extends State<ProdutoForm> {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             AFieldMoney(
               label: 'Preço de Venda',
               identifier: 'venda',
@@ -200,7 +199,6 @@ class ProdutoFormState extends State<ProdutoForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldNumber(
@@ -210,7 +208,7 @@ class ProdutoFormState extends State<ProdutoForm> {
               required: true,
               expanded: true,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             AFieldDate(
               label: 'Data Cadastro',
               identifier: 'dataCadastro',
@@ -221,14 +219,12 @@ class ProdutoFormState extends State<ProdutoForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         AFieldTextExpandable(
           label: 'Descrição',
           identifier: 'descricao',
           value: widget.produto?.descricao,
           maxLines: 2,
         ),
-        const SizedBox(height: 12),
         AFieldDropDown<int?>(
           value: _fornecedorId,
           label: 'Fornecedor',
@@ -240,7 +236,6 @@ class ProdutoFormState extends State<ProdutoForm> {
           onChanged: (int? v) => setState(() => _fornecedorId = v),
           required: true,
         ),
-        const SizedBox(height: 12),
         AFieldDropDown<bool>(
           label: 'Status do Produto',
           identifier: 'ativo',

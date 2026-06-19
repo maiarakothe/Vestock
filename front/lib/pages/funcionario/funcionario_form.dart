@@ -6,6 +6,7 @@ import 'package:awidgets/fields/a_field_phone.dart';
 import 'package:awidgets/fields/a_field_text.dart';
 import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
+import '../../constants.dart';
 import '../../services/api_service.dart';
 import '../../models/funcionario.dart';
 
@@ -66,6 +67,7 @@ class FuncionarioForm extends StatelessWidget {
     return AFormDialog<dynamic>(
       title: funcionario == null ? 'Novo Funcionário' : 'Editar Funcionário',
       width: 500,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         AFieldText(
           label: 'Nome',

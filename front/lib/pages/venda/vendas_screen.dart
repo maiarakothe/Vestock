@@ -232,6 +232,7 @@ class _VendasScreenState extends State<VendasScreen> {
           ),
           const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               if (isMobile) ...<Widget>[
                 const SizedBox(width: 16),

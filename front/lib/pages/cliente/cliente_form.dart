@@ -9,6 +9,7 @@ import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_theme.dart';
+import '../../constants.dart';
 import '../../models/cliente.dart';
 import '../../services/api_service.dart';
 
@@ -49,6 +50,7 @@ class ClienteForm extends StatelessWidget {
       title: cliente == null ? 'Novo Cliente' : 'Editar Cliente',
       persistent: false,
       width: 500,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         Row(
           children: <Widget>[

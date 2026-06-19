@@ -6,6 +6,7 @@ import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_theme.dart';
+import '../../constants.dart';
 import '../../models/fornecedor.dart';
 import '../../services/api_service.dart';
 
@@ -47,6 +48,7 @@ class FornecedorForm extends StatelessWidget {
       title: fornecedor == null ? 'Novo Fornecedor' : 'Editar Fornecedor',
       persistent: false,
       width: 500,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         Row(
           children: <Widget>[

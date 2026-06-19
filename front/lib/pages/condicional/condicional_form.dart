@@ -8,6 +8,7 @@ import 'package:awidgets/general/a_button.dart';
 import 'package:awidgets/general/a_form_dialog.dart';
 import 'package:flutter/material.dart';
 
+import '../../constants.dart';
 import '../../models/cliente.dart';
 import '../../models/condicional.dart';
 import '../../models/item_condicional.dart';
@@ -136,6 +137,7 @@ class _CondicionalFormState extends State<CondicionalForm> {
           : 'Editar Condicional',
       persistent: false,
       width: 600,
+      fullscreen: MediaQuery.of(context).size.width < kMobileBreakpoint,
       fields: <Widget>[
         AFieldDropDown<int?>(
           label: 'Cliente',
@@ -146,14 +148,12 @@ class _CondicionalFormState extends State<CondicionalForm> {
               .map((Cliente c) => AOption<int?>(value: c.id, label: c.nome))
               .toList(),
         ),
-        const SizedBox(height: 12),
         AFieldText(
           label: 'Nome da Condicional',
           identifier: 'nome',
           value: widget.condicional?.nomeItem,
           required: true,
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             Expanded(
@@ -166,7 +166,7 @@ class _CondicionalFormState extends State<CondicionalForm> {
                 required: true,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: AFieldDateHour(
                 identifier: 'dataDevolucao',
@@ -178,19 +178,16 @@ class _CondicionalFormState extends State<CondicionalForm> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         AFieldTextExpandable(
           label: 'Observações',
           identifier: 'obs',
           value: widget.condicional?.observacao,
           maxLines: 2,
         ),
-        const SizedBox(height: 16),
         const Text(
           'Itens',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
-        const SizedBox(height: 8),
         Row(
           children: <Widget>[
             Expanded(

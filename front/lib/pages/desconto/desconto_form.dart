@@ -60,7 +60,6 @@ class DescontoForm extends StatelessWidget {
           required: true,
           suffix: const Text('%'),
         ),
-        const SizedBox(height: 12),
         Row(
           children: <Widget>[
             AFieldDate(
