@@ -273,35 +273,6 @@ class _VendasScreenState extends State<VendasScreen> {
       child: LayoutBuilder(
         builder: (BuildContext ctx, BoxConstraints c) {
           final bool wide = c.maxWidth > 560;
-          final Widget search = TextField(
-            controller: _searchCtrl,
-            onChanged: (String v) => setState(() => _query = v),
-            decoration: InputDecoration(
-              hintText: 'Buscar por cliente, produto, funcionário…',
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: _query.isEmpty
-                  ? null
-                  : IconButton(
-                      icon: const Icon(Icons.close_rounded),
-                      onPressed: () {
-                        _searchCtrl.clear();
-                        setState(() => _query = '');
-                      },
-                    ),
-              filled: true,
-              fillColor: isDark
-                  ? Colors.white.withOpacity(.06)
-                  : const Color(0xFFF1F3F9),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 0,
-              ),
-            ),
-          );
           final Widget filtro = SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -322,15 +293,13 @@ class _VendasScreenState extends State<VendasScreen> {
           if (wide) {
             return Row(
               children: <Widget>[
-                Expanded(child: search),
-                const SizedBox(width: 12),
                 Flexible(child: filtro),
               ],
             );
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[search, const SizedBox(height: 10), filtro],
+            children: <Widget>[filtro],
           );
         },
       ),

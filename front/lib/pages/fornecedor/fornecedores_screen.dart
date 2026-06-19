@@ -1,4 +1,3 @@
-import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
@@ -79,17 +78,6 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: AFieldSearch(
-                label: 'Pesquisar fornecedores...',
-                value: _search,
-                onChanged: (String? v) {
-                  setState(() => _search = v ?? '');
-                  _load(_search);
-                },
-              ),
-            ),
             Expanded(
               child: _loading
                   ? const LoadingWidget()

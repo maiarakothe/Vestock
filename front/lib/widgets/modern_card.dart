@@ -19,13 +19,13 @@ class ModernCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(24),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.grey.withValues(alpha: 0.04),
             blurRadius: 15,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
