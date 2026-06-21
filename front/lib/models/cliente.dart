@@ -34,7 +34,7 @@ class Cliente {
     estado: j['estado'] ?? '',
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'cpf': cpf,
     'telefone': telefone,
@@ -45,6 +45,6 @@ class Cliente {
     'bairro': bairro,
     'cidade': cidade,
     'estado': estado,
-    if (lojaId != null) 'loja': {'id': lojaId},
+    if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

@@ -27,7 +27,7 @@ class AuthCard extends StatelessWidget {
             Color(0xFFF8FAFF),
           ],
         ),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(.08),
             blurRadius: 40,

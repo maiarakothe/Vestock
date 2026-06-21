@@ -22,11 +22,11 @@ class Desconto {
     lojaId: j['loja'] != null ? j['loja']['id'] : null,
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'valor': valor,
-    'dataCadastro': (dataCadastro ?? '') + 'T00:00:00',
+    'dataCadastro': '${dataCadastro ?? ''}T00:00:00',
     'dataValidade': dataValidade,
-      if (lojaId != null) 'loja': {'id': lojaId},
+      if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

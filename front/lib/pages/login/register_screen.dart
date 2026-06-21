@@ -38,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'cidade': data?['city'],
           });
       ApiService.lojaId = response['id'];
+      ApiService.lojaNome = response['nome'];
       return null;
     } catch (e) {
       return e.toString();
@@ -70,10 +71,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           height: 48,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [DefaultColors.primary, DefaultColors.secondary],
+              colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
             ),
             borderRadius: BorderRadius.circular(14),
-            boxShadow: [
+            boxShadow: <BoxShadow>[
               BoxShadow(
                 color: DefaultColors.primary.withOpacity(.25),
                 blurRadius: 15,
@@ -106,53 +107,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+    return Theme(
+      data: themeLightData(),
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: AuthCard(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Image.asset('assets/images/logo-2-cortado.png', width: 280),
-                  form(),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 10),
-                      Text(
-                        'Já possui conta?',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Entrar',
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: AuthCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset('assets/images/logo-2-cortado.png', width: 280),
+                    form(),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(height: 10),
+                        Text(
+                          'Já possui conta?',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: DefaultColors.secondary,
+                            color: Colors.grey.shade600,
                             fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Entrar',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: DefaultColors.secondary,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

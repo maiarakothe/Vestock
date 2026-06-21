@@ -36,18 +36,18 @@ class Funcionario {
     lojaId: j['loja']?['id'],
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'cpf': cpf,
     'cargo': cargo,
     'telefone': telefone,
     'email': email,
     'sexo': sexo,
-    'dataAdmissao': (dataAdmissao ?? '') + 'T00:00:00',
+    'dataAdmissao': '${dataAdmissao ?? ''}T00:00:00',
     'rua': rua,
     'bairro': bairro,
     'cidade': cidade,
     'estado': estado,
-    if (lojaId != null) 'loja': {'id': lojaId},
+    if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

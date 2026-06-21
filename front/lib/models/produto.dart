@@ -48,7 +48,7 @@ class Produto {
     loja: j['loja'] != null ? Loja.fromJson(j['loja']) : null,
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'tamanho': tamanho,
     'cor': cor,
@@ -59,8 +59,8 @@ class Produto {
     'quantidadeEstoque': quantidadeEstoque,
     'ativo': ativo,
     'dataCadastro': dataCadastro,
-    if (fornecedor?.id != null) 'fornecedor': {'id': fornecedor!.id},
-    if (loja?.id != null) 'loja': {'id': loja!.id},
-    if (lojaId != null) 'loja': {'id': lojaId},
+    if (fornecedor?.id != null) 'fornecedor': <String, int?>{'id': fornecedor!.id},
+    if (loja?.id != null) 'loja': <String, int?>{'id': loja!.id},
+    if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

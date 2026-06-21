@@ -34,7 +34,7 @@ class Loja {
     cidade: j['cidade'],
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'cnpj': cnpj,
     'telefone': telefone,

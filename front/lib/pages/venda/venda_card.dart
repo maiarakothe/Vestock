@@ -68,7 +68,7 @@ class VendaCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(24),
-            boxShadow: [
+            boxShadow: <BoxShadow>[
               BoxShadow(
                 color: Colors.black.withOpacity(0.04),
                 blurRadius: 16,
@@ -139,7 +139,7 @@ class VendaCard extends StatelessWidget {
                     _tag(Icons.payments_outlined, venda.formaPagamento, cs),
                     const SizedBox(width: 8),
                     _tag(Icons.badge_outlined, venda.funcionarioNome, cs),
-                    if (venda.descontoNome != null) ...[
+                    if (venda.descontoNome != null) ...<Widget>[
                       const SizedBox(width: 8),
                       _tag(
                         Icons.local_offer_outlined,

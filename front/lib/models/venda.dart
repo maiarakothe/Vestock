@@ -29,7 +29,7 @@ class Venda {
     descontoNome: j['desconto']?['nome'],
     totalVenda: (j['totalVenda'] as num?)?.toDouble() ?? 0,
     valorCupomDesconto: (j['valorCupomDesconto'] as num?)?.toDouble() ?? 0,
-    itens: (j['itens'] as List? ?? [])
+    itens: (j['itens'] as List? ?? <dynamic>[])
         .map((i) => ItemVenda.fromJson(i))
         .toList(),
     lojaId: j['loja'] != null ? j['loja']['id'] : null,

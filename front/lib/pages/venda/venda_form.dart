@@ -133,7 +133,7 @@ class VendaFormState extends State<VendaForm> {
               },
             )
             .toList(),
-        'loja': {'id': ApiService.lojaId},
+        'loja': <String, int?>{'id': ApiService.lojaId},
       };
 
       await ApiService.post('/api/vendas', body);

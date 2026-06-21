@@ -18,7 +18,7 @@ class VendasScreen extends StatefulWidget {
 class _VendasScreenState extends State<VendasScreen> {
   List<Venda> _vendas = <Venda>[];
   bool _loading = true;
-  String _query = '';
+  final String _query = '';
   String _filtroPagamento = 'Todos';
   final TextEditingController _searchCtrl = TextEditingController();
 

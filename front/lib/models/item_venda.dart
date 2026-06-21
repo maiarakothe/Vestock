@@ -18,8 +18,8 @@ class ItemVenda {
     valorUnitario: (j['valorUnitario'] as num?)?.toDouble() ?? 0,
   );
 
-  Map<String, dynamic> toJson() => {
-    'produto': {'id': produtoId},
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'produto': <String, int?>{'id': produtoId},
     'quantidadeItem': quantidade,
     'valorUnitario': valorUnitario,
     'valorTotal': valorUnitario * quantidade,

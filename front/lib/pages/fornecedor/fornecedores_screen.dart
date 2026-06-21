@@ -16,7 +16,7 @@ class FornecedoresScreen extends StatefulWidget {
 class _FornecedoresScreenState extends State<FornecedoresScreen> {
   List<Fornecedor> _items = <Fornecedor>[];
   bool _loading = true;
-  String _search = '';
+  final String _search = '';
 
   @override
   void initState() {
