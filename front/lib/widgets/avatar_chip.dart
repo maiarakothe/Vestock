@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
+import '../services/api_service.dart';
 
 class AvatarChip extends StatelessWidget {
   final bool isDark;
@@ -9,6 +10,10 @@ class AvatarChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String avatarLabel = ApiService.lojaNome?.trim().isNotEmpty == true
+        ? ApiService.lojaNome!.trim()[0].toUpperCase()
+        : 'L';
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(21),
@@ -17,17 +22,17 @@ class AvatarChip extends StatelessWidget {
         height: 42,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          boxShadow: [
+          boxShadow: <BoxShadow>[
             BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
           ],
           gradient: const LinearGradient(
-            colors: [DefaultColors.primary, DefaultColors.secondary],
+            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
           ),
         ),
         alignment: Alignment.center,
-        child: const Text(
-          'L',
-          style: TextStyle(
+        child: Text(
+          avatarLabel,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
             fontSize: 16,

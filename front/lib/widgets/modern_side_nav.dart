@@ -29,7 +29,7 @@ class ModernSideNav extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: Row(
-          children: [
+          children: <Widget>[
             Container(
               width: 36,
               height: 36,
@@ -69,7 +69,7 @@ class ModernSideNav extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(isDark ? .25 : .05),
             blurRadius: 24,
@@ -78,7 +78,7 @@ class ModernSideNav extends StatelessWidget {
         ],
       ),
       child: Column(
-        children: [
+        children: <Widget>[
       Padding(
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Center(

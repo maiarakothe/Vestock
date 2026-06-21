@@ -7,7 +7,7 @@ class BottomItem extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const BottomItem({
+  const BottomItem({super.key, 
     required this.icon,
     required this.label,
     required this.selected,
@@ -16,7 +16,7 @@ class BottomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
@@ -30,12 +30,12 @@ class BottomItem extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: selected
               ? const LinearGradient(
-            colors: [DefaultColors.primary, DefaultColors.secondary],
+            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
           )
               : null,
           borderRadius: BorderRadius.circular(16),
           boxShadow: selected
-              ? [
+              ? <BoxShadow>[
             BoxShadow(
               color: DefaultColors.primary.withOpacity(.35),
               blurRadius: 14,
@@ -45,7 +45,7 @@ class BottomItem extends StatelessWidget {
               : null,
         ),
         child: Row(
-          children: [
+          children: <Widget>[
             Icon(
               icon,
               size: 20,

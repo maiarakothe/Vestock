@@ -19,13 +19,13 @@ class SideItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = DefaultColors.primary;
-    final inactiveText = isDark ? Colors.white70 : const Color(0xFF475569);
+    final Color activeColor = DefaultColors.primary;
+    final Color inactiveText = isDark ? Colors.white70 : const Color(0xFF475569);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Stack(
-        children: [
+        children: <Widget>[
           AnimatedPositioned(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOutCubic,
@@ -40,7 +40,7 @@ class SideItem extends StatelessWidget {
                     ? const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
+                  colors: <Color>[
                     DefaultColors.primary,
                     DefaultColors.secondary,
                   ],
@@ -97,7 +97,7 @@ class SideItem extends StatelessWidget {
                               : const Color(0xFFF1F3F9)),
                           borderRadius: BorderRadius.circular(11),
                           boxShadow: selected
-                              ? [
+                              ? <BoxShadow>[
                             BoxShadow(
                               color: activeColor.withOpacity(.35),
                               blurRadius: 14,

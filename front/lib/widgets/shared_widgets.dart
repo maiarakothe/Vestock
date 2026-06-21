@@ -3,9 +3,9 @@ import 'package:awidgets/general/a_dialog.dart';
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
 
-
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({super.key});
+  
   @override
   Widget build(BuildContext context) =>
       const Center(child: CircularProgressIndicator());
@@ -23,7 +23,7 @@ class ErrorWidget2 extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center),
@@ -47,7 +47,7 @@ class EmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) => Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         Icon(Icons.inbox_outlined, size: 48, color: Colors.grey[400]),
         const SizedBox(height: 8),
         Text(message, style: TextStyle(color: Colors.grey[600])),
@@ -62,17 +62,20 @@ Future<bool?> confirmDialog(BuildContext context, String message) {
     builder: (BuildContext ctx) => ADialogV2<dynamic>(
       title: 'Confirmação',
       content: <Widget>[
-        Text(message),
+        Text(message, style: TextStyle(fontSize: 16)),
         SizedBox(height: 12),
         Row(
-          children: [
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
             AButton(
               text: 'Cancelar',
+              outlined: true,
               onPressed: () => Navigator.pop(ctx, false),
             ),
+            const SizedBox(width: 12),
             AButton(
+              text: 'Confirmar',
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Confirmar'),
             ),
           ],
         ),

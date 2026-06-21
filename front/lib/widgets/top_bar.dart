@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:front/widgets/theme_toggle_button.dart';
 
@@ -39,7 +37,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
           color: isDark ? Colors.white : DefaultColors.text,
         ),
       ),
-      actions: [
+      actions: <Widget>[
         ThemeToggleButton(isDark: isDark, onTap: onToggleTheme),
         const SizedBox(width: 8),
         Padding(

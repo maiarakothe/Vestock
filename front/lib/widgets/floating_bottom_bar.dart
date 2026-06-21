@@ -29,7 +29,7 @@ class FloatingBottomBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(24),
-          boxShadow: [
+          boxShadow: <BoxShadow>[
             BoxShadow(
               color: Colors.black.withOpacity(isDark ? .35 : .08),
               blurRadius: 24,
@@ -39,7 +39,7 @@ class FloatingBottomBar extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             for (final int i in indices)
               BottomItem(
                 icon: items[i].icon,
