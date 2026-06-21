@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front/pages/home/home_screen.dart';
 import 'package:front/pages/login/login_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_theme.dart';

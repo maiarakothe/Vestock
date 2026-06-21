@@ -4,13 +4,15 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Altere para o IP/URL do seu servidor Spring Boot
+  //static String baseUrl = 'http://ip-do-seu-servidor:8000';
   static String baseUrl = 'http://localhost:8000';
 
   // Armazena o ID da loja da sessão atual para evitar nulos no banco
   static int? lojaId;
+  static String? lojaNome;
 
   static Map<String, String> get headers {
-    final Map<String, String> h = {
+    final Map<String, String> h = <String, String>{
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
@@ -21,21 +23,23 @@ class ApiService {
   }
 
   static Uri _buildUri(String path) {
-    final uri = Uri.parse('$baseUrl$path');
+    final Uri uri = Uri.parse('$baseUrl$path');
     if (lojaId == null) return uri;
-    final params = Map<String, String>.from(uri.queryParameters);
+    final Map<String, String> params = Map<String, String>.from(
+      uri.queryParameters,
+    );
     params['lojaId'] = lojaId.toString();
     return uri.replace(queryParameters: params);
   }
 
   static Future<dynamic> get(String path) async {
-    final res = await http.get(_buildUri(path), headers: headers);
+    final http.Response res = await http.get(_buildUri(path), headers: headers);
     _check(res);
     return jsonDecode(utf8.decode(res.bodyBytes));
   }
 
   static Future<dynamic> post(String path, Map<String, dynamic> body) async {
-    final res = await http.post(
+    final http.Response res = await http.post(
       _buildUri(path),
       headers: headers,
       body: jsonEncode(body),
@@ -46,7 +50,7 @@ class ApiService {
   }
 
   static Future<dynamic> put(String path, Map<String, dynamic> body) async {
-    final res = await http.put(
+    final http.Response res = await http.put(
       _buildUri(path),
       headers: headers,
       body: jsonEncode(body),
@@ -57,22 +61,30 @@ class ApiService {
   }
 
   static Future<void> delete(String path) async {
-    final res = await http.delete(_buildUri(path), headers: headers);
+    final http.Response res = await http.delete(
+      _buildUri(path),
+      headers: headers,
+    );
     _check(res);
   }
 
   static Future<dynamic> patch(String path) async {
-    final res = await http.patch(_buildUri(path), headers: headers);
+    final http.Response res = await http.patch(
+      _buildUri(path),
+      headers: headers,
+    );
     _check(res);
     if (res.body.isEmpty) return null;
     return jsonDecode(utf8.decode(res.bodyBytes));
   }
 
   static Future<dynamic> login(String email, String senha) async {
-    final res = await http.post(
+    final http.Response res = await http.post(
       Uri.parse('$baseUrl/api/auth/login'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'email': email, 'senha': senha},
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: <String, String>{'email': email, 'senha': senha},
     );
 
     _check(res);

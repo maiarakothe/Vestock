@@ -31,18 +31,18 @@ class Condicional {
     dataDevolucao: j['dataDevolucao'],
     observacao: j['observacao'],
     devolvido: j['devolvido'] ?? false,
-    itens: (j['itens'] as List? ?? [])
+    itens: (j['itens'] as List? ?? <dynamic>[])
         .map((i) => ItemCondicional.fromJson(i))
         .toList(),
   );
 
-  Map<String, dynamic> toJson() => {
-    'cliente': {'id': clienteId},
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'cliente': <String, int>{'id': clienteId},
     'nomeItem': nomeItem,
     'dataRetirada': dataRetirada,
     'dataDevolucao': dataDevolucao,
     'observacao': observacao,
-    'itens': itens.map((i) => i.toJson()).toList(),
-    if (lojaId != null) 'loja': {'id': lojaId},
+    'itens': itens.map((ItemCondicional i) => i.toJson()).toList(),
+    if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

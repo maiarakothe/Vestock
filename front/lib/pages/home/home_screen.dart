@@ -110,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _logout() {
     ApiService.lojaId = null;
+    ApiService.lojaNome = null;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute<dynamic>(builder: (_) => const LoginScreen()),
@@ -135,7 +136,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               backgroundColor: Theme.of(context).cardColor,
               child: SafeArea(
                 child: ModernSideNav(
-                  items: _items.where((NavItem i) => i.label != 'Minha Loja').toList(),
+                  items: _items
+                      .where((NavItem i) => i.label != 'Minha Loja')
+                      .toList(),
                   selectedIndex: _selectedIndex,
                   onSelect: (int i) {
                     setState(() => _selectedIndex = i);
@@ -153,7 +156,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ? Row(
               children: <Widget>[
                 ModernSideNav(
-                  items: _items.where((NavItem i) => i.label != 'Minha Loja').toList(),
+                  items: _items
+                      .where((NavItem i) => i.label != 'Minha Loja')
+                      .toList(),
                   selectedIndex: _selectedIndex,
                   onSelect: (int i) => setState(() => _selectedIndex = i),
                   onAvatarTap: _irParaLojas,

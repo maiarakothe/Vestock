@@ -33,7 +33,7 @@ class Fornecedor {
     estado: j['estado'],
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'nome': nome,
     'cnpj': cnpj,
     'telefone': telefone,
@@ -44,6 +44,6 @@ class Fornecedor {
     'bairro': bairro,
     'cidade': cidade,
     'estado': estado,
-    if (lojaId != null) 'loja': {'id': lojaId},
+    if (lojaId != null) 'loja': <String, int?>{'id': lojaId},
   };
 }

@@ -11,8 +11,8 @@ class ItemCondicional {
     quantidade: j['quantidadeItem'] ?? 1,
   );
 
-  Map<String, dynamic> toJson() => {
-    'produto': {'id': produtoId},
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'produto': <String, int?>{'id': produtoId},
     'quantidadeItem': quantidade,
   };
 }

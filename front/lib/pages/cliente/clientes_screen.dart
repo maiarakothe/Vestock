@@ -168,9 +168,9 @@ class _ClientesScreenState extends State<ClientesScreen> {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: AppTable<Cliente>(
-        columns: const ['Nome', 'CPF', 'Telefone', 'Cidade', 'Ações'],
+        columns: const <String>['Nome', 'CPF', 'Telefone', 'Cidade', 'Ações'],
         items: _clientes,
-        onTap: (Cliente c) => _openForm(c),
+        onTap: _openForm,
         rowBuilder: (Cliente c) => <DataCell>[
           DataCell(
             Text(c.nome, style: const TextStyle(fontWeight: FontWeight.w600)),

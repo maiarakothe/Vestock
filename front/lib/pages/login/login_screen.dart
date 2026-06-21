@@ -29,15 +29,19 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response != null) {
         ApiService.lojaId =
             response['lojaId'] ??
-                response['idLoja'] ??
-                response['loja']?['id'] ??
-                response['id'];
+            response['idLoja'] ??
+            response['loja']?['id'] ??
+            response['id'];
+        ApiService.lojaNome = response['nome'] ?? response['loja']?['nome'];
         debugPrint('ID da Loja definido como: ${ApiService.lojaId}');
+        debugPrint('Nome da Loja definido como: ${ApiService.lojaNome}');
       }
       return null;
-    }catch (e, stack) {
+    } catch (e, stack) {
       debugPrint('ERRO LOGIN: $e');
-      debugPrint('DICA: Verifique se o IP ${ApiService.baseUrl} está correto e acessível pelo celular.');
+      debugPrint(
+        'DICA: Verifique se o IP ${ApiService.baseUrl} está correto e acessível pelo celular.',
+      );
       debugPrintStack(stackTrace: stack);
       return e.toString();
     }
@@ -96,58 +100,65 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+    return Theme(
+      data: themeLightData(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[DefaultColors.primary, DefaultColors.secondary],
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: AuthCard(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Image.asset('assets/images/logo-2-cortado.png', width: 280),
-                  form(),
-                  const SizedBox(height: 18),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 10),
-                      Text(
-                        'Não possui conta?',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<dynamic>(
-                              builder: (_) => const RegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Criar conta',
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: AuthCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset('assets/images/logo-2-cortado.png', width: 280),
+
+                    form(),
+
+                    const SizedBox(height: 18),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Não possui conta?',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: DefaultColors.secondary,
+                            color: Colors.grey.shade600,
                             fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<dynamic>(
+                                builder: (_) => const RegisterScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Criar conta',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: DefaultColors.secondary,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

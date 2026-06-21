@@ -303,7 +303,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(.3),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(

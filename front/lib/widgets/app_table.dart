@@ -27,7 +27,7 @@ class AppTable<T> extends StatelessWidget {
         color: cs.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: cs.outlineVariant.withOpacity(0.1)),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
             blurRadius: 20,
@@ -37,14 +37,14 @@ class AppTable<T> extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: LayoutBuilder(
-        builder: (context, constraints) {
+        builder: (BuildContext context, BoxConstraints constraints) {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             child: ConstrainedBox(
               constraints: BoxConstraints(minWidth: constraints.maxWidth),
               child: DataTable(
-                headingRowColor: MaterialStateProperty.all(
+                headingRowColor: WidgetStateProperty.all(
                   DefaultColors.primary.withOpacity(isDark ? 0.15 : 0.05),
                 ),
                 dataRowMinHeight: 56,

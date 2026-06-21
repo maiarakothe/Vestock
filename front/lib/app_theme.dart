@@ -23,8 +23,9 @@ abstract class DefaultColors {
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFEF4444);
 }
+
 // Notificador global para o modo de tema
-ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+ValueNotifier<ThemeMode> themeNotifier = ValueNotifier<ThemeMode>(ThemeMode.light);
 
 ThemeData themeLight = themeLightData();
 ThemeData themeDark = themeDarkData();
@@ -50,10 +51,7 @@ ThemeData themeLightData() {
       indicatorColor: DefaultColors.primary,
       indicator: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-            color: DefaultColors.primary,
-            width: 2.0,
-          ),
+          bottom: BorderSide(color: DefaultColors.primary, width: 2.0),
         ),
       ),
     ),
@@ -105,7 +103,7 @@ ThemeData themeLightData() {
       backgroundColor: Colors.white,
       elevation: 12,
       surfaceTintColor: Colors.white,
-      shadowColor: Colors.black.withOpacity(0.2),
+      shadowColor: Colors.black.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide.none,
