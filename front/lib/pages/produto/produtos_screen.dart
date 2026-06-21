@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:front/pages/produto/produto_form.dart';
 import 'package:front/widgets/shared_widgets.dart';
 import 'package:front/widgets/app_table.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../app_theme.dart';
 import '../../models/produto.dart';
@@ -153,10 +154,10 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Produto',
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Produto'),
       ),
     );
   }

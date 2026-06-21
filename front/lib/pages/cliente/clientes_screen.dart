@@ -2,6 +2,7 @@ import 'package:awidgets/fields/a_field_search.dart';
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
 import 'package:front/widgets/app_table.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../app_theme.dart';
 import '../../widgets/modern_card.dart';
 import '../../constants.dart';
@@ -104,10 +105,10 @@ class _ClientesScreenState extends State<ClientesScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Cliente',
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Cliente'),
       ),
     );
   }

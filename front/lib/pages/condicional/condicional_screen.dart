@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../models/condicional.dart';
 import 'condicional_card.dart';
@@ -127,10 +128,10 @@ class _CondicionalScreenState extends State<CondicionalScreen> {
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Condicional',
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Condicional'),
       ),
     );
   }

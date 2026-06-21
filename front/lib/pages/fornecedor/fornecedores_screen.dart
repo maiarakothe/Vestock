@@ -4,6 +4,7 @@ import '../../../services/api_service.dart';
 import '../../app_theme.dart';
 import '../../models/fornecedor.dart';
 import '../../widgets/modern_card.dart';
+import '../../widgets/modern_fab.dart';
 import 'fornecedor_form.dart';
 
 class FornecedoresScreen extends StatefulWidget {
@@ -205,51 +206,10 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
           ],
         ),
       ),
-      floatingActionButton: Container(
-        height: 58,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: <Color>[
-              Color(0xFF7533FE),
-              Color(0xFF4F7CFF),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: const Color(0xFF7533FE).withOpacity(.4),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(18),
-            onTap: _openForm,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 22,
-                vertical: 14,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.add, color: Colors.white),
-                  SizedBox(width: 8),
-                  Text(
-                    'Novo Fornecedor',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Fornecedor',
+        onPressed: _openForm,
       ),
     );
   }

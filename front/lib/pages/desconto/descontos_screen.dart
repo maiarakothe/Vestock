@@ -1,6 +1,7 @@
 import 'package:front/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../models/desconto.dart';
 import '../../widgets/modern_card.dart';
@@ -163,13 +164,10 @@ class _DescontosScreenState extends State<DescontosScreen> {
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Desconto',
         onPressed: _openForm,
-        backgroundColor: DefaultColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.add, size: 28),
       ),
     );
   }

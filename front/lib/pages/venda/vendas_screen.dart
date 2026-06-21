@@ -4,6 +4,7 @@ import 'package:front/models/item_venda.dart';
 import 'package:front/pages/venda/venda_card.dart';
 import 'package:front/pages/venda/venda_form.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../app_theme.dart';
 import '../../models/venda.dart';
@@ -151,10 +152,10 @@ class _VendasScreenState extends State<VendasScreen> {
                 ),
               ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Nova Venda',
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Nova Venda'),
       ),
     );
   }
@@ -291,11 +292,7 @@ class _VendasScreenState extends State<VendasScreen> {
             ),
           );
           if (wide) {
-            return Row(
-              children: <Widget>[
-                Flexible(child: filtro),
-              ],
-            );
+            return Row(children: <Widget>[Flexible(child: filtro)]);
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,6 +1,7 @@
 // lib/screens/funcionarios_screen.dart
 import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
+import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../app_theme.dart';
 import '../../models/funcionario.dart';
@@ -28,7 +29,9 @@ class _FuncionariosScreenState extends State<FuncionariosScreen> {
     try {
       final dynamic data = await ApiService.get('/api/funcionarios');
       setState(() {
-        _items = (data as List<dynamic>).map((dynamic j) => Funcionario.fromJson(j)).toList();
+        _items = (data as List<dynamic>)
+            .map((dynamic j) => Funcionario.fromJson(j))
+            .toList();
         _loading = false;
       });
     } catch (e) {
@@ -73,8 +76,8 @@ class _FuncionariosScreenState extends State<FuncionariosScreen> {
           : _items.isEmpty
           ? const EmptyWidget(message: 'Nenhum funcionário')
           : Padding(
-            padding: const EdgeInsets.all(20),
-            child: RefreshIndicator(
+              padding: const EdgeInsets.all(20),
+              child: RefreshIndicator(
                 onRefresh: _load,
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8),
@@ -97,7 +100,9 @@ class _FuncionariosScreenState extends State<FuncionariosScreen> {
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                              color: DefaultColors.primary.withValues(alpha: .30),
+                              color: DefaultColors.primary.withValues(
+                                alpha: .30,
+                              ),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -218,11 +223,11 @@ class _FuncionariosScreenState extends State<FuncionariosScreen> {
                   },
                 ),
               ),
-          ),
-      floatingActionButton: FloatingActionButton.extended(
+            ),
+      floatingActionButton: ModernFloatingActionButton(
+        icon: Icons.add,
+        label: 'Novo Funcionário',
         onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Funcionário'),
       ),
     );
   }
