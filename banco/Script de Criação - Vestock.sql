@@ -9,6 +9,7 @@ CREATE TABLE Cliente (
   codcli    int4 NOT NULL, 
   cpfcli    varchar(11) NOT NULL UNIQUE, 
   datcadcli timestamp NOT NULL, 
+  codloj    int4 NOT NULL, 
   CONSTRAINT pkey_cliente 
     PRIMARY KEY (codcli));
 COMMENT ON TABLE Cliente IS 'Cadastros de Clientes';
@@ -22,8 +23,9 @@ CREATE TABLE Condicional (
   datretitncon timestamp NOT NULL, 
   datdevitncon timestamp NOT NULL, 
   obsitncon    varchar(150), 
-  devitncon    bool, 
+  devitncon    bool NOT NULL, 
   codcli       int4 NOT NULL, 
+  codloj       int4 NOT NULL, 
   CONSTRAINT pkey_condicional 
     PRIMARY KEY (codcnd));
 COMMENT ON TABLE Condicional IS 'Cadastros de itens levados no Condicional';
@@ -40,6 +42,7 @@ CREATE TABLE Desconto (
   valdsc numeric(4, 2) NOT NULL, 
   caddsc timestamp NOT NULL, 
   vlddsc date NOT NULL, 
+  codloj int4 NOT NULL, 
   CONSTRAINT pkey_desconto 
     PRIMARY KEY (coddsc));
 COMMENT ON TABLE Desconto IS 'Cadastros de Descontos';
@@ -49,27 +52,11 @@ COMMENT ON COLUMN Desconto.valdsc IS 'Valor do Desconto em porcentagem';
 COMMENT ON COLUMN Desconto.caddsc IS 'Data de inicio da validade do Desconto';
 COMMENT ON COLUMN Desconto.vlddsc IS 'Validade do Desconto';
 
-CREATE TABLE Desconto_log (
-  codlog    SERIAL NOT NULL, 
-  opelog    varchar(10) NOT NULL, 
-  usudeslog varchar(80) NOT NULL, 
-  datdeslog timestamp NOT NULL, 
-  antdeslog varchar(200), 
-  depdeslog varchar(200), 
-  CONSTRAINT pkey_desconto_log 
-    PRIMARY KEY (codlog));
-COMMENT ON TABLE Desconto_log IS 'Tabela criada para fins de auditoria sobre alterações feitas na tabela Desconto.';
-COMMENT ON COLUMN Desconto_log.codlog IS 'Código do Log gerado';
-COMMENT ON COLUMN Desconto_log.opelog IS 'Operação realizada';
-COMMENT ON COLUMN Desconto_log.usudeslog IS 'Nome do usuário da pessoa que fez a alteração';
-COMMENT ON COLUMN Desconto_log.datdeslog IS 'Data de quando a alteração foi feita';
-COMMENT ON COLUMN Desconto_log.antdeslog IS 'Armazena o que estava salvo antes da alteração';
-COMMENT ON COLUMN Desconto_log.depdeslog IS 'Armazena o que foi salvo depois da alteração';
-
 CREATE TABLE Fornecedor (
   codfor    int4 NOT NULL, 
   cnpfor    varchar(14) NOT NULL UNIQUE, 
   nomfanfor varchar(80), 
+  codloj    int4 NOT NULL, 
   CONSTRAINT pkey_fornecedor 
     PRIMARY KEY (codfor));
 COMMENT ON TABLE Fornecedor IS 'Cadastro de Fornecedores';
@@ -82,6 +69,7 @@ CREATE TABLE Funcionario (
   cpffun    varchar(11) NOT NULL UNIQUE, 
   carfun    varchar(40) NOT NULL, 
   datadmfun timestamp NOT NULL, 
+  codloj    int4 NOT NULL, 
   CONSTRAINT pkey_funcionario 
     PRIMARY KEY (codpes));
 COMMENT ON TABLE Funcionario IS 'Cadastros de Funcionarios';
@@ -116,13 +104,15 @@ COMMENT ON COLUMN item_venda.vlruniteven IS 'Preço unitário na venda';
 COMMENT ON COLUMN item_venda.vlrtotiteven IS 'Valor total dos itens por venda';
 
 CREATE TABLE Loja (
-  codloj SERIAL NOT NULL, 
-  nomloj varchar(80) NOT NULL, 
-  rualoj varchar(100) NOT NULL, 
-  bailoj varchar(40) NOT NULL, 
-  cidloj varchar(40) NOT NULL, 
-  telloj varchar(20) NOT NULL, 
-  cnploj varchar(14) NOT NULL UNIQUE, 
+  codloj   SERIAL NOT NULL, 
+  nomloj   varchar(80) NOT NULL, 
+  rualoj   varchar(100) NOT NULL, 
+  bailoj   varchar(40) NOT NULL, 
+  cidloj   varchar(40) NOT NULL, 
+  telloj   varchar(20) NOT NULL, 
+  cnploj   varchar(14) NOT NULL UNIQUE, 
+  emaloj   varchar(80) NOT NULL UNIQUE, 
+  senhaloj varchar(200) NOT NULL, 
   CONSTRAINT pkey_loja 
     PRIMARY KEY (codloj));
 COMMENT ON TABLE Loja IS 'Cadastro de lojas';
@@ -133,6 +123,8 @@ COMMENT ON COLUMN Loja.bailoj IS 'Bairro do endereço da loja';
 COMMENT ON COLUMN Loja.cidloj IS 'Cidade onde a loja está localizada';
 COMMENT ON COLUMN Loja.telloj IS 'Telefone da loja';
 COMMENT ON COLUMN Loja.cnploj IS 'CNPJ da loja';
+COMMENT ON COLUMN Loja.emaloj IS 'email da loja';
+COMMENT ON COLUMN Loja.senhaloj IS 'Senha da Loja';
 
 CREATE TABLE Pessoa (
   codpes SERIAL NOT NULL, 
@@ -184,22 +176,6 @@ COMMENT ON COLUMN Produto.datcadpro IS 'Data do cadastro do produto';
 COMMENT ON COLUMN Produto.despro IS 'Descrição do produto';
 COMMENT ON COLUMN Produto.atipro IS 'TRUE: produto ativo e FALSE: produto inativo';
 
-CREATE TABLE Usuario (
-  codusu    SERIAL NOT NULL, 
-  useusu    varchar(50) NOT NULL UNIQUE, 
-  senhasusu varchar(200) DEFAULT 'true' NOT NULL, 
-  atvusu    bool NOT NULL, 
-  datcadusu timestamp DEFAULT NOW() NOT NULL, 
-  codpes    int4 NOT NULL, 
-  CONSTRAINT pkey_usuario 
-    PRIMARY KEY (codusu));
-COMMENT ON TABLE Usuario IS 'Tabela para controle de login de funcionarios';
-COMMENT ON COLUMN Usuario.codusu IS 'Código do usuario';
-COMMENT ON COLUMN Usuario.useusu IS 'Nome de usuario';
-COMMENT ON COLUMN Usuario.senhasusu IS 'Senha hash do usuario';
-COMMENT ON COLUMN Usuario.atvusu IS 'Status do usuario (ativo, inativo)';
-COMMENT ON COLUMN Usuario.datcadusu IS 'Data do cadastro do usuario';
-
 CREATE TABLE Venda (
   codven    SERIAL NOT NULL, 
   datven    timestamp NOT NULL, 
@@ -209,6 +185,7 @@ CREATE TABLE Venda (
   codcli    int4 NOT NULL, 
   codfun    int4 NOT NULL, 
   coddsc    int4, 
+  codloj    int4 NOT NULL, 
   CONSTRAINT pkey_venda 
     PRIMARY KEY (codven));
 COMMENT ON TABLE Venda IS 'Cadastro de Vendas';
@@ -219,76 +196,28 @@ COMMENT ON COLUMN Venda.fompagven IS 'Forma de pagamento da Venda.
 (Dinheiro, Crédito, Débito, Pix)';
 COMMENT ON COLUMN Venda.cupdscven IS 'Cupom de desconto da Venda para clientes cadastrados';
 
-CREATE TABLE Venda_log (
-  codvenlog SERIAL NOT NULL, 
-  opevenlog varchar(10) NOT NULL, 
-  usuvenlog varchar(80) NOT NULL, 
-  datvenlog timestamp NOT NULL, 
-  antvenlog varchar(250), 
-  depvenlog varchar(250), 
-  CONSTRAINT pkey_venda_log 
-    PRIMARY KEY (codvenlog));
-COMMENT ON TABLE Venda_log IS 'Tabela para auditoria de alterações na tabela venda.';
-COMMENT ON COLUMN Venda_log.codvenlog IS 'Código do log';
-COMMENT ON COLUMN Venda_log.opevenlog IS 'Operação realizada na alteração';
-COMMENT ON COLUMN Venda_log.usuvenlog IS 'Usuário que fez a alteração';
-COMMENT ON COLUMN Venda_log.datvenlog IS 'Data da alteração';
-COMMENT ON COLUMN Venda_log.antvenlog IS 'O que estava antes da alteração';
-COMMENT ON COLUMN Venda_log.depvenlog IS 'O que ficou depois da alteração';
-
+ALTER TABLE Cliente ADD CONSTRAINT cliente_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
 ALTER TABLE Cliente ADD CONSTRAINT cliente_codpes_fkey_001 FOREIGN KEY (codcli) REFERENCES Pessoa (codpes);
 ALTER TABLE Condicional ADD CONSTRAINT condicional_ccodcli_fkey_001 FOREIGN KEY (codcli) REFERENCES Cliente (codcli);
+ALTER TABLE Condicional ADD CONSTRAINT condicional_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
+ALTER TABLE Desconto ADD CONSTRAINT desconto_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
+ALTER TABLE Fornecedor ADD CONSTRAINT fornecedor_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
 ALTER TABLE Fornecedor ADD CONSTRAINT fornecedor_codpes_fkey_001 FOREIGN KEY (codfor) REFERENCES Pessoa (codpes);
+ALTER TABLE Funcionario ADD CONSTRAINT funcionario_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
 ALTER TABLE Funcionario ADD CONSTRAINT funcionario_codpes_fkey_001 FOREIGN KEY (codpes) REFERENCES Pessoa (codpes);
 ALTER TABLE item_condicional ADD CONSTRAINT "item_condicional_codcnd_fkey_002
 " FOREIGN KEY (codcnd) REFERENCES Condicional (codcnd);
 ALTER TABLE item_condicional ADD CONSTRAINT "item_condicional_codpro_fkey_001
 " FOREIGN KEY (codpro) REFERENCES Produto (codpro);
-ALTER TABLE item_venda ADD CONSTRAINT item_venda_codpro_fkey_001 FOREIGN KEY (codpro) references Produto (codpro);
+ALTER TABLE item_venda ADD CONSTRAINT item_venda_codpro_fkey_001 FOREIGN KEY (codpro) REFERENCES Produto (codpro);
 ALTER TABLE item_venda ADD CONSTRAINT item_venda_codven_fkey_002 FOREIGN KEY (codven) REFERENCES Venda (codven);
 ALTER TABLE Produto ADD CONSTRAINT produto_codfor_fkey_001 FOREIGN KEY (codfor) REFERENCES Fornecedor (codfor);
 ALTER TABLE Produto ADD CONSTRAINT produto_coloj_fkey_002 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
-ALTER TABLE Usuario ADD CONSTRAINT usuario_codfun_fkey_001 FOREIGN KEY (codfun) REFERENCES Funcionario (codpes);
 ALTER TABLE Venda ADD CONSTRAINT venda_codcli_fkey_002 FOREIGN KEY (codcli) REFERENCES Cliente (codcli);
 ALTER TABLE Venda ADD CONSTRAINT venda_coddsc_fkey_001 FOREIGN KEY (coddsc) REFERENCES Desconto (coddsc);
 ALTER TABLE Venda ADD CONSTRAINT venda_codfun_fkey_001 FOREIGN KEY (codfun) REFERENCES Funcionario (codpes);
+ALTER TABLE Venda ADD CONSTRAINT venda_codloj_fkey_001 FOREIGN KEY (codloj) REFERENCES Loja (codloj);
 
-
--- Tabela para Auditoria dos Descontos
-CREATE TABLE Desconto_log (
-  codlog    SERIAL NOT NULL, 
-  opelog    varchar(10) NOT NULL, 
-  usudeslog varchar(80) NOT NULL, 
-  datdeslog timestamp NOT NULL, 
-  antdeslog varchar(200), 
-  depdeslog varchar(200), 
-  CONSTRAINT pkey_desconto_log 
-    PRIMARY KEY (codlog));
-COMMENT ON TABLE Desconto_log IS 'Tabela criada para fins de auditoria sobre alterações feitas na tabela Desconto.';
-COMMENT ON COLUMN Desconto_log.codlog IS 'Código do Log gerado';
-COMMENT ON COLUMN Desconto_log.opelog IS 'Operação realizada';
-COMMENT ON COLUMN Desconto_log.usudeslog IS 'Nome do usuário da pessoa que fez a alteração';
-COMMENT ON COLUMN Desconto_log.datdeslog IS 'Data de quando a alteração foi feita';
-COMMENT ON COLUMN Desconto_log.antdeslog IS 'Armazena o que estava salvo antes da alteração';
-COMMENT ON COLUMN Desconto_log.depdeslog IS 'Armazena o que foi salvo depois da alteração';
-
--- Tabela para Auditoria de Vendas
-CREATE TABLE Venda_log (
-  codvenlog SERIAL NOT NULL, 
-  opevenlog varchar(10) NOT NULL, 
-  usuvenlog varchar(80) NOT NULL, 
-  datvenlog timestamp NOT NULL, 
-  antvenlog varchar(250), 
-  depvenlog varchar(250), 
-  CONSTRAINT pkey_venda_log 
-    PRIMARY KEY (codvenlog));
-COMMENT ON TABLE Venda_log IS 'Tabela para auditoria de alterações na tabela venda.';
-COMMENT ON COLUMN Venda_log.codvenlog IS 'Código do log';
-COMMENT ON COLUMN Venda_log.opevenlog IS 'Operação realizada na alteração';
-COMMENT ON COLUMN Venda_log.usuvenlog IS 'Usuário que fez a alteração';
-COMMENT ON COLUMN Venda_log.datvenlog IS 'Data da alteração';
-COMMENT ON COLUMN Venda_log.antvenlog IS 'O que estava antes da alteração';
-COMMENT ON COLUMN Venda_log.depvenlog IS 'O que ficou depois da alteração';
 
 -----------------------------------------------
 -- Criação dos Índices:
