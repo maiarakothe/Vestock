@@ -18,6 +18,12 @@ Vestock é um sistema de gestão para lojas de vestuário que unifica o controle
 - 🌙 Modo noturno
 - 📐 Interface responsiva para diferentes plataformas
 
+## 🎥 Preview
+
+<p align="center">
+  <img src="front/assets/gif.gif"/>
+</p>
+
 ## Requisitos Funcionais
 
 | Código | Descrição |

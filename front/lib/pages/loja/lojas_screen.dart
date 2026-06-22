@@ -72,7 +72,7 @@ class _LojasScreenState extends State<LojasScreen> {
                     children: <Widget>[
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
@@ -176,7 +176,6 @@ class _LojasScreenState extends State<LojasScreen> {
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1C1E),
                 ),
               ),
             ],
@@ -202,7 +201,6 @@ class _LojasScreenState extends State<LojasScreen> {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[500],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -211,7 +209,6 @@ class _LojasScreenState extends State<LojasScreen> {
                   value,
                   style: const TextStyle(
                     fontSize: 15,
-                    color: Color(0xFF44474E),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
