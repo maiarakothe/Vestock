@@ -235,7 +235,6 @@ class _CondicionalFormState extends State<CondicionalForm> {
         else
           ..._itens.asMap().entries.map(
             (MapEntry<int, ItemCondicional> e) => Card(
-              color: Colors.grey[50],
               margin: const EdgeInsets.only(bottom: 4),
               child: ListTile(
                 dense: true,

@@ -253,12 +253,13 @@ class VendaFormState extends State<VendaForm> {
           onPressed: () => setState(() => _itens.add(ItemVendaTemp())),
           text: 'Adicionar Item',
           icon: Icons.add_shopping_cart,
+          color: DefaultColors.primary
         ),
         const Divider(height: 32),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -356,7 +357,6 @@ class ItemRowState extends State<ItemRow> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[50],
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(10),
