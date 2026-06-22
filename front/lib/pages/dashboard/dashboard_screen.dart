@@ -215,12 +215,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           (dynamic c) => Container(
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFDAD6),
+              color: const Color(0xFFFAC8A5),
               borderRadius: BorderRadius.circular(16),
             ),
             child: ListTile(
               leading: const CircleAvatar(
-                backgroundColor: Color(0xFFBA1A1A),
+                backgroundColor: Color(0xFFCF7714),
                 child: Icon(
                   Icons.timer_outlined,
                   color: Colors.white,
@@ -231,7 +231,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Vencendo hoje: Condicional #${c['id']}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF410002),
+                  color: Color(0xFF804C05),
                 ),
               ),
               subtitle: Text(
@@ -239,6 +239,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: const TextStyle(color: Color(0xFF410002)),
               ),
               trailing: Text(
+                style: TextStyle(color: Colors.grey[600]),
                 formatDate(c['dataDevolucao'] as String?, nullReplacement: '–'),
               ),
             ),

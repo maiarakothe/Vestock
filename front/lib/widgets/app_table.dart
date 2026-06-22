@@ -40,45 +40,52 @@ class AppTable<T> extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(
-                  DefaultColors.primary.withOpacity(isDark ? 0.15 : 0.05),
-                ),
-                dataRowMinHeight: 56,
-                dataRowMaxHeight: 80,
-
-                horizontalMargin: 24,
-                columnSpacing: 20,
-                showCheckboxColumn: false,
-                columns: columns.map((String col) {
-                  return DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        col.toUpperCase(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12,
-                          letterSpacing: 1.1,
-                          color: DefaultColors.primary,
-                        ),
-                      ),
+          return Scrollbar(
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: DataTable(
+                    headingRowColor: WidgetStateProperty.all(
+                      DefaultColors.primary.withOpacity(isDark ? 0.15 : 0.05),
                     ),
-                  );
-                }).toList(),
-                rows: items.map((T item) {
-                  return DataRow(
-                    color: rowColorBuilder != null
-                        ? MaterialStateProperty.all(rowColorBuilder!(item))
-                        : null,
-                    onSelectChanged: onTap != null ? (_) => onTap!(item) : null,
-                    cells: rowBuilder(item),
-                  );
-                }).toList(),
+                    dataRowMinHeight: 56,
+                    dataRowMaxHeight: 80,
+                    horizontalMargin: 24,
+                    columnSpacing: 20,
+                    showCheckboxColumn: false,
+                    columns: columns.map((String col) {
+                      return DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            col.toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                              letterSpacing: 1.1,
+                              color: DefaultColors.primary,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    rows: items.map((T item) {
+                      return DataRow(
+                        color: rowColorBuilder != null
+                            ? MaterialStateProperty.all(rowColorBuilder!(item))
+                            : null,
+                        onSelectChanged: onTap != null
+                            ? (_) => onTap!(item)
+                            : null,
+                        cells: rowBuilder(item),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ),
           );
