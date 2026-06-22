@@ -1,5 +1,6 @@
 import 'package:front/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:front/constants.dart';
 import 'package:front/widgets/shared_widgets.dart';
 import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
@@ -17,6 +18,7 @@ class DescontosScreen extends StatefulWidget {
 class _DescontosScreenState extends State<DescontosScreen> {
   List<Desconto> _items = <Desconto>[];
   bool _loading = true;
+  bool get isMobile => MediaQuery.of(context).size.width < kMobileBreakpoint;
 
   @override
   void initState() {
@@ -136,12 +138,16 @@ class _DescontosScreenState extends State<DescontosScreen> {
                             color: Colors.grey[500],
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            'Válido até ${_fmtDate(d.dataValidade)}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              'Válido até ${_fmtDate(d.dataValidade)}',
+                              softWrap: true,
+                              overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],

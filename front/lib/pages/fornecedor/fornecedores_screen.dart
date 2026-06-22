@@ -193,12 +193,6 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
                                 color: DefaultColors.accent,
                                 onTap: () => _openForm(f),
                               ),
-                              const SizedBox(width: 8),
-                              buildActionButton(
-                                icon: Icons.delete_outline,
-                                color: DefaultColors.error,
-                                onTap: () => _delete(f),
-                              ),
                             ],
                           );
                         },
