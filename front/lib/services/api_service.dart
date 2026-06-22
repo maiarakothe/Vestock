@@ -3,8 +3,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // Altere para o IP/URL do seu servidor Spring Boot
+  // Caso queria rodar o projeto no dispositivo fisico Android
+  // descomente a linha abaixo
+  // e altere para o IP/URL do seu servidor Spring Boot
   //static String baseUrl = 'http://ip-do-seu-servidor:8000';
+
+  // Caso queira rodar no emulador descomente a linha abaixo
+  //static String baseUrl = 'http://10.0.2.2:8000';
+
+  // Caso queira rodar na web
   static String baseUrl = 'http://localhost:8000';
 
   // Armazena o ID da loja da sessão atual para evitar nulos no banco
