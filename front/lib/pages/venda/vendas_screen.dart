@@ -7,6 +7,7 @@ import 'package:front/widgets/shared_widgets.dart';
 import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../app_theme.dart';
+import '../../utils/date_utils.dart';
 import '../../models/venda.dart';
 
 class VendasScreen extends StatefulWidget {
@@ -63,18 +64,6 @@ class _VendasScreenState extends State<VendasScreen> {
     }
   }
 
-  String _fmtData(String? s) {
-    if (s == null) {
-      return '';
-    }
-    try {
-      final DateTime dt = DateTime.parse(s);
-      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return s;
-    }
-  }
 
   List<Venda> get _vendasFiltradas {
     final String q = _query.trim().toLowerCase();
@@ -107,7 +96,7 @@ class _VendasScreenState extends State<VendasScreen> {
   Widget build(BuildContext context) {
     final ColorScheme cs = Theme.of(context).colorScheme;
     final bool isMobile = MediaQuery.of(context).size.width < kMobileBreakpoint;
-    final int crossAxisCount = !isMobile ? 3 : 1;
+    final int crossAxisCount = !isMobile ? 2 : 1;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -268,7 +257,6 @@ class _VendasScreenState extends State<VendasScreen> {
   }
 
   Widget _buildToolbar(ColorScheme cs) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: LayoutBuilder(
@@ -349,7 +337,7 @@ class _VendasScreenState extends State<VendasScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _fmtData(v.dataVenda),
+                    formatDate(v.dataVenda),
                     style: TextStyle(color: cs.onSurfaceVariant),
                   ),
                   const SizedBox(height: 16),

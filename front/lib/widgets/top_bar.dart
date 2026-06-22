@@ -26,6 +26,9 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Colors.transparent,
       foregroundColor: DefaultColors.text,
+      iconTheme: IconThemeData(
+        color: isDark ? DefaultColors.primary : DefaultColors.text,
+      ),
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,

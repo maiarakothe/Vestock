@@ -57,7 +57,7 @@ class VendaFormState extends State<VendaForm> {
             .toList();
         _produtos = (results[2] as List<dynamic>)
             .map((dynamic j) => Produto.fromJson(j as Map<String, dynamic>))
-            .where((Produto p) => p.quantidadeEstoque > 0)
+            .where((Produto p) => p.quantidadeEstoque > 0 && p.ativo)
             .toList();
         _descontos = (results[3] as List<dynamic>)
             .map((dynamic j) => Desconto.fromJson(j as Map<String, dynamic>))

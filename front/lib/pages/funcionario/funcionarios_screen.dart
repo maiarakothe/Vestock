@@ -80,7 +80,7 @@ class _FuncionariosScreenState extends State<FuncionariosScreen> {
               child: RefreshIndicator(
                 onRefresh: _load,
                 child: ListView.builder(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8).copyWith(bottom: 100),
                   itemCount: _items.length,
                   itemBuilder: (BuildContext ctx, int i) {
                     final Funcionario f = _items[i];

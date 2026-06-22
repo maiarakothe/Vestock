@@ -56,6 +56,7 @@ class _CondicionalFormState extends State<CondicionalForm> {
             .toList();
         _produtos = (results[1] as List<dynamic>)
             .map((dynamic j) => Produto.fromJson(j))
+            .where((Produto p) => p.ativo)
             .toList();
       });
     } catch (e) {

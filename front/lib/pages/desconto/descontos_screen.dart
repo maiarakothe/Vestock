@@ -90,7 +90,7 @@ class _DescontosScreenState extends State<DescontosScreen> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView.builder(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20).copyWith(bottom: 100),
                 itemCount: _items.length,
                 itemBuilder: (BuildContext ctx, int i) {
                   final Desconto d = _items[i];

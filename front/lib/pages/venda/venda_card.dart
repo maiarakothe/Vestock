@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import '../../app_theme.dart';
+import '../../utils/date_utils.dart';
 import '../../models/item_venda.dart';
 import '../../models/venda.dart';
 
@@ -11,16 +11,6 @@ class VendaCard extends StatelessWidget {
 
   const VendaCard({super.key, required this.venda, required this.onTap});
 
-  String _fmtData(String? s) {
-    if (s == null) return '';
-    try {
-      final DateTime dt = DateTime.parse(s);
-      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return s;
-    }
-  }
 
   Widget _tag(IconData icon, String label, ColorScheme cs, {Color? color}) {
     final Color c = color ?? DefaultColors.accent;
@@ -109,7 +99,7 @@ class VendaCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          _fmtData(venda.dataVenda),
+                          formatDate(venda.dataVenda),
                           style: TextStyle(
                             fontSize: 12,
                             color: cs.onSurfaceVariant,

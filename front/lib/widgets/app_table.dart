@@ -6,6 +6,7 @@ class AppTable<T> extends StatelessWidget {
   final List<T> items;
   final List<DataCell> Function(T item) rowBuilder;
   final void Function(T item)? onTap;
+  final Color? Function(T item)? rowColorBuilder;
   final double minWidth;
 
   const AppTable({
@@ -14,6 +15,7 @@ class AppTable<T> extends StatelessWidget {
     required this.items,
     required this.rowBuilder,
     this.onTap,
+    this.rowColorBuilder,
     this.minWidth = 600,
   });
 
@@ -70,6 +72,9 @@ class AppTable<T> extends StatelessWidget {
                 }).toList(),
                 rows: items.map((T item) {
                   return DataRow(
+                    color: rowColorBuilder != null
+                        ? MaterialStateProperty.all(rowColorBuilder!(item))
+                        : null,
                     onSelectChanged: onTap != null ? (_) => onTap!(item) : null,
                     cells: rowBuilder(item),
                   );

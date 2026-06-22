@@ -115,7 +115,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
 
   Widget _buildMobileList() {
     return ListView.builder(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12).copyWith(bottom: 100),
       itemCount: _clientes.length,
       itemBuilder: (BuildContext ctx, int i) {
         final Cliente c = _clientes[i];
@@ -167,7 +167,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
 
   Widget _buildDesktopTable() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20).copyWith(bottom: 100),
       child: AppTable<Cliente>(
         columns: const <String>['Nome', 'CPF', 'Telefone', 'Cidade', 'Ações'],
         items: _clientes,

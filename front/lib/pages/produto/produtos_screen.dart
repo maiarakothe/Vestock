@@ -97,7 +97,9 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
                 : RefreshIndicator(
                     onRefresh: () => _load(_search),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ).copyWith(bottom: 100),
                       child: AppTable<Produto>(
                         columns: const <String>[
                           'Nome',
@@ -108,12 +110,25 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
                         ],
                         items: _produtos,
                         onTap: _openForm,
+                        rowColorBuilder: (Produto p) {
+                          if (!p.ativo) {
+                            return Colors.grey.withValues(alpha: 0.15);
+                          }
+                          if (p.quantidadeEstoque <= 5) {
+                            return Colors.yellow.withValues(alpha: 0.30);
+                          }
+                          return null;
+                        },
                         rowBuilder: (Produto p) => <DataCell>[
                           DataCell(
                             Text(
                               p.nome,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w600,
+                                color: p.ativo ? null : Colors.grey,
+                                fontStyle: p.ativo
+                                    ? FontStyle.normal
+                                    : FontStyle.italic,
                               ),
                             ),
                           ),
@@ -123,8 +138,8 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
                               '${p.quantidadeEstoque}',
                               style: TextStyle(
                                 color: p.quantidadeEstoque <= 5
-                                    ? Colors.red
-                                    : Colors.green,
+                                    ? DefaultColors.warning
+                                    : (p.ativo ? Colors.green : Colors.grey),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -138,12 +153,7 @@ class _ProdutosScreenState extends State<ProdutosScreen> {
                                   color: DefaultColors.accent,
                                   onTap: () => _openForm(p),
                                 ),
-                                const SizedBox(width: 8),
-                                buildActionButton(
-                                  icon: Icons.delete_outline,
-                                  color: DefaultColors.error,
-                                  onTap: () => _delete(p),
-                                ),
+                                // exclusão removida para produtos (não é possível excluir)
                               ],
                             ),
                           ),

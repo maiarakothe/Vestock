@@ -87,7 +87,9 @@ class _FornecedoresScreenState extends State<FornecedoresScreen> {
                   : RefreshIndicator(
                       onRefresh: () => _load(_search),
                       child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                        ).copyWith(bottom: 100),
                         itemCount: _items.length,
                         itemBuilder: (BuildContext ctx, int i) {
                           final Fornecedor f = _items[i];

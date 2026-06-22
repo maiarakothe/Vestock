@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:front/widgets/shared_widgets.dart';
 import '../../../services/api_service.dart';
 import '../../../app_theme.dart';
+import '../../utils/date_utils.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -17,6 +18,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _condicionaisAtivas = 0;
   List _estoqueBaixo = <dynamic>[];
   List _alertasCondicionais = <dynamic>[];
+  List _condicionaisAtrasadas = <dynamic>[];
+  List _recentCondicionais = <dynamic>[];
   bool _loading = true;
 
   @override
@@ -33,7 +36,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ApiService.get('/api/condicionais/total-ativas'),
         ApiService.get('/api/produtos/total'),
         ApiService.get('/api/condicionais/vencendo-hoje'),
+        ApiService.get('/api/condicionais'),
       ]);
+
+      final List<dynamic> todas = results[4] ?? <dynamic>[];
+      final DateTime agora = DateTime.now();
+      final List<dynamic> atrasadas = <dynamic>[];
+      final List<dynamic> recentes = <dynamic>[];
+
+      for (final dynamic c in todas) {
+        try {
+          final String? s = c['dataDevolucao'] as String?;
+          if (s != null &&
+              (c['devolvido'] == false || c['devolvido'] == null)) {
+            final DateTime dt = DateTime.parse(s);
+            if (dt.isBefore(agora)) {
+              atrasadas.add(c);
+            }
+            recentes.add(c);
+          }
+        } catch (_) {}
+      }
+      recentes.sort((dynamic a, dynamic b) {
+        try {
+          final DateTime da = DateTime.parse(
+            a['dataRetirada'] ?? '1970-01-01T00:00:00',
+          );
+          final DateTime db = DateTime.parse(
+            b['dataRetirada'] ?? '1970-01-01T00:00:00',
+          );
+          return db.compareTo(da);
+        } catch (_) {
+          return 0;
+        }
+      });
 
       setState(() {
         _totalClientes = results[0]['totalClientes'] ?? 0;
@@ -41,6 +77,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _totalEstoque = results[2]['totalEstoque'] ?? 0;
         _estoqueBaixo = results[2]['estoqueBaixo'] ?? <dynamic>[];
         _alertasCondicionais = results[3] ?? <dynamic>[];
+        _condicionaisAtrasadas = atrasadas;
+        _recentCondicionais = recentes.take(5).toList();
         _loading = false;
       });
     } catch (e) {
@@ -71,6 +109,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _buildKpiSection(),
                     const SizedBox(height: 40),
                     _buildAlertsSection(),
+                    const SizedBox(height: 24),
+                    _buildRecentSection(),
                     const SizedBox(height: 40),
                     _buildStockSection(),
                   ],
@@ -120,7 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildAlertsSection() {
-    if (_alertasCondicionais.isEmpty) {
+    if (_alertasCondicionais.isEmpty && _condicionaisAtrasadas.isEmpty) {
       return const SizedBox.shrink();
     }
     return Column(
@@ -136,14 +176,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(width: 8),
             const Text(
               'Alertas de Devolução',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ],
         ),
         const SizedBox(height: 16),
+        ..._condicionaisAtrasadas.map(
+          (dynamic c) => Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: DefaultColors.error.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFB00020),
+                child: Icon(
+                  Icons.error_outline,
+                  color: Color(0xFF410002),
+                  size: 20,
+                ),
+              ),
+              title: Text(
+                'Atrasada: Condicional #${c['id']}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                'Cliente: ${c['cliente']?['nome'] ?? 'Não identificado'}',
+              ),
+              trailing: Text(
+                formatDate(c['dataDevolucao'] as String?, nullReplacement: '–'),
+              ),
+            ),
+          ),
+        ),
+
         ..._alertasCondicionais.map(
           (dynamic c) => Container(
             margin: const EdgeInsets.only(bottom: 12),
@@ -171,7 +238,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Cliente: ${c['cliente']?['nome'] ?? 'Não identificado'}',
                 style: const TextStyle(color: Color(0xFF410002)),
               ),
+              trailing: Text(
+                formatDate(c['dataDevolucao'] as String?, nullReplacement: '–'),
+              ),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentSection() {
+    if (_recentCondicionais.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Últimas Condicionais Ativas',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _recentCondicionais.length,
+            separatorBuilder: (_, _) => const Divider(height: 1),
+            itemBuilder: (BuildContext ctx, int i) {
+              final dynamic c = _recentCondicionais[i];
+              return ListTile(
+                title: Text(
+                  'Condicional #${c['id']}',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text('Cliente: ${c['cliente']?['nome'] ?? '—'}'),
+                trailing: Text(
+                  c['dataRetirada'] != null
+                      ? c['dataRetirada'].toString().split('T').first
+                      : '',
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -184,10 +297,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: <Widget>[
         const Text(
           'Estoque Crítico',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const SizedBox(height: 16),
         Container(

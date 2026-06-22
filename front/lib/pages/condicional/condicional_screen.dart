@@ -3,6 +3,7 @@ import 'package:front/widgets/shared_widgets.dart';
 import 'package:front/widgets/modern_fab.dart';
 import '../../../services/api_service.dart';
 import '../../models/condicional.dart';
+import '../../utils/date_utils.dart';
 import 'condicional_card.dart';
 import 'condicional_form.dart';
 
@@ -87,19 +88,6 @@ class _CondicionalScreenState extends State<CondicionalScreen> {
     }
   }
 
-  String _fmtData(String? s) {
-    if (s == null) {
-      return '–';
-    }
-    try {
-      final DateTime dt = DateTime.parse(s);
-      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return s;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,13 +102,13 @@ class _CondicionalScreenState extends State<CondicionalScreen> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
-                ),
+                ).copyWith(bottom: 100),
                 itemCount: _items.length,
                 itemBuilder: (BuildContext ctx, int i) {
                   final Condicional c = _items[i];
                   return CondicionalCard(
                     condicional: c,
-                    fmtData: _fmtData,
+                    fmtData: (s) => formatDate(s, nullReplacement: '–'),
                     onEdit: () => _openForm(c),
                     onDelete: () => _delete(c),
                     onDevolver: () => _marcarDevolvido(c),
