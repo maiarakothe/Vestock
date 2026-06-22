@@ -62,7 +62,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "168e38e4116e9c0282b3c04303fd0830f478a408"
+      resolved-ref: "9f3ce21f7153dabc7b3ef350c2d2e73379798781"
       url: "https://gitlab.com/almeidatech/awidgets.git"
     source: git
     version: "0.0.1"
