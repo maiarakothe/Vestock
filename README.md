@@ -112,3 +112,33 @@ flutter run
 
 > Observação: se estiver usando dispositivo físico ou emulador, verifique o `ApiService.baseUrl` em `front/lib/services/api_service.dart` para apontar para o backend correto.
 
+## 👨‍💻 Desenvolvedores
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/maiarakothe" style="text-decoration: none; color: inherit;">
+        <img src="https://avatars.githubusercontent.com/u/160647563?v=4" width="115"><br>
+        <strong>Maiara Braun Kothe</strong>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/MatheusBamberg" style="text-decoration: none; color: inherit;">
+        <img src="https://avatars.githubusercontent.com/u/204625992?v=4" width="115"><br>
+        <strong>Matheus Scherer Bamberg</strong>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Zilles09" style="text-decoration: none; color: inherit;">
+        <img src="https://avatars.githubusercontent.com/u/165856735?v=4" width="115"><br>
+        <strong>Moisés Augusto Braun Zilles</strong>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/eric-camini482" style="text-decoration: none; color: inherit;">
+        <img src="https://avatars.githubusercontent.com/u/205243776?v=4" width="115"><br>
+        <strong>Eric Camini</strong>
+      </a>
+    </td>
+  </tr>
+</table>
