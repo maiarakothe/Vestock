@@ -1,5 +1,15 @@
 <h1 align="center">👚 Vestock 🛍️</h1>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter" />
+  <img src="https://img.shields.io/badge/Dart-3.10.1-0175C2?style=for-the-badge&logo=dart" />
+  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk" />
+  <img src="https://img.shields.io/badge/Spring_Boot-4.x-6DB33F?style=for-the-badge&logo=springboot" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql" />
+  <img src="https://img.shields.io/badge/License-Academic-blue?style=for-the-badge" />
+</p>
+
+
 Vestock é um sistema de gestão para lojas de vestuário que unifica o controle de produtos, clientes, fornecedores, funcionários, vendas e estoque em uma solução Flutter com backend Java
 
 ## Funcionalidades implementadas
